@@ -14,17 +14,14 @@ export class PermissionHandler {
   }
 
   /**
-   * Check if it is possible for a website to have permissions. for example,
-   * on firefox, it is impossible to check for permission on internal pages
+   * Check if it is possible for a website to have permissions. For example,
+   * it is impossible to check for permission on internal pages
    * (for example, about:[...]).
    * @param {string} url Url to check.
    * @return {boolean} true if it is possible to check, otherwise false.
    */
   canHavePermissions(url) {
-    if (url.indexOf('about:') === 0 || url.indexOf('edge:') === 0) {
-      return false;
-    }
-    return true;
+    return url.indexOf('about:') !== 0;
   }
 
   /**

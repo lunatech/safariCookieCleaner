@@ -216,9 +216,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
                 sendNotification(error);
                 return;
               }
-              if (browserDetector.isSafari()) {
-                onCookiesChanged();
-              }
+              onCookiesChanged();
               if (cookieContainer) {
                 cookieContainer.showSuccessAnimation();
               }
@@ -235,9 +233,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
               sendNotification(error);
               return;
             }
-            if (browserDetector.isSafari()) {
-              onCookiesChanged();
-            }
+            onCookiesChanged();
 
             if (cookieContainer) {
               cookieContainer.showSuccessAnimation();
@@ -540,15 +536,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       });
 
     adjustWidthIfSmaller();
-
-    if (chrome && chrome.runtime && chrome.runtime.getBrowserInfo) {
-      chrome.runtime.getBrowserInfo(function (info) {
-        const mainVersion = info.version.split('.')[0];
-        if (mainVersion < 57) {
-          containerCookie.style.height = '600px';
-        }
-      });
-    }
   });
 
   // == End document ready == //
@@ -685,17 +672,6 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
     document.getElementById('button-bar-add').classList.remove('active');
     document.getElementById('button-bar-import').classList.remove('active');
     document.getElementById('button-bar-default').classList.remove('active');
-    // Firefox can't request permissions from devTools due to
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1796933
-    if (
-      browserDetector.isFirefox() &&
-      typeof browserDetector.getApi().devtools !== 'undefined'
-    ) {
-      console.log('Firefox devtools permission display hack');
-      html.querySelector('div').textContent =
-        "Go to your settings (about:addons) or open the extension's popup to " +
-        'adjust your permissions.';
-    }
 
     if (containerCookie.firstChild) {
       if (containerCookie.firstChild.id === 'no-permission') {
@@ -994,9 +970,7 @@ import { CookieHandlerPopup } from './cookieHandlerPopup.js';
       if (callback) {
         callback();
       }
-      if (browserDetector.isSafari()) {
-        onCookiesChanged();
-      }
+      onCookiesChanged();
     });
   }
 
