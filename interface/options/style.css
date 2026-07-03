@@ -127,12 +127,3 @@ a:hover {
   font-size: 1.2em;
 }
 
-.disclaimer {
-  font-size: 0.8em;
-  color: var(--secondary-text-color);
-  padding-top: 5px;
-}
-
-.hidden {
-  display: none;
-}

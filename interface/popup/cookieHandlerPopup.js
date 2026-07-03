@@ -37,27 +37,9 @@ export class CookieHandlerPopup extends GenericCookieHandler {
     const api = this.browserDetector.getApi();
     api.tabs.onUpdated.addListener(this.onTabsChanged);
     api.tabs.onActivated.addListener(this.onTabActivated);
-    if (!this.browserDetector.isSafari()) {
-      api.cookies.onChanged.addListener(this.onCookiesChanged);
-    }
 
     this.emit('ready');
     this.isReady = true;
-  };
-
-  /**
-   * Handles events that is triggered when a cookie changes.
-   * @param {object} changeInfo An object containing details of the change that
-   *     occurred.
-   */
-  onCookiesChanged = changeInfo => {
-    const domain = changeInfo.cookie.domain.substring(1);
-    if (
-      this.currentTab.url.indexOf(domain) !== -1 &&
-      changeInfo.cookie.storeId === (this.currentTab.cookieStoreId || '0')
-    ) {
-      this.emit('cookiesChanged', changeInfo);
-    }
   };
 
   /**

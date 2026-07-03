@@ -357,17 +357,7 @@ form.import > div {
   display: none;
 }
 
-/* Firefox display outlines in a strange way */
-@-moz-document url-prefix() {
-  #cookie-container li .header:focus {
-    outline-offset: -3px;
-    outline: 2px solid #444;
-    border-radius: 3px;
-  }
-}
-
 #cookie-container li .header .icon {
-  -moz-transition: transform 150ms ease-in 0s;
   transition: transform 150ms ease-in 0s;
   margin-right: 10px;
 }

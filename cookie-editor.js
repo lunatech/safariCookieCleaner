@@ -11,14 +11,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   const browserDetector = new BrowserDetector();
   const permissionHandler = new PermissionHandler(browserDetector);
 
-  isFirefoxAndroid(function (response) {
-    if (response) {
-      const popupOptions = {
-        popup: '/interface/popup-mobile/cookie-list.html',
-      };
-      browserDetector.getApi().action.setPopup(popupOptions);
-    }
-  });
   isSafariIos(function (response) {
     if (response) {
       // If we detect the user is on iOS, mark the browser
@@ -32,24 +24,10 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
     }
   });
 
-  if (browserDetector.supportsSidePanel()) {
-    browserDetector
-      .getApi()
-      .sidePanel.setPanelBehavior({ openPanelOnActionClick: false })
-      // eslint-disable-next-line prettier/prettier
-      .catch(error => {
-        console.error(error);
-      });
-  }
-
   // Setting up event listeners
   browserDetector.getApi().runtime.onConnect.addListener(onConnect);
   browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
   browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-
-  if (!browserDetector.isSafari()) {
-    browserDetector.getApi().cookies.onChanged.addListener(onCookiesChanged);
-  }
 
   /**
    * Handles messages coming from the front end, mostly from the dev tools.
@@ -226,16 +204,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   }
 
   /**
-   * Handles events that is triggered when a cookie changes.
-   * @param {object} changeInfo An object containing details of the change that
-   *     occurred.
-   */
-  function onCookiesChanged(changeInfo) {
-    console.log('cookies changed, notifying all devtools');
-    sendMessageToAllTabs('cookiesChanged', changeInfo);
-  }
-
-  /**
    * Handles the event that is fired when a tab is updated.
    * @param {number} tabId The id of the tab that changed.
    * @param {object} changeInfo Properties of the tab that changed.
@@ -244,25 +212,6 @@ import { PermissionHandler } from './interface/lib/permissionHandler.js';
   function onTabsChanged(tabId, changeInfo, _tab) {
     console.log('tabs changed', tabId, changeInfo, _tab);
     sendMessageToTab(tabId, 'tabsChanged', changeInfo);
-  }
-
-  /**
-   * Special function to detect if we are running on Firefox for Android.
-   * @param {function} callback Responds true if it is Firefox on android,
-   *     otherwise false.
-   */
-  function isFirefoxAndroid(callback) {
-    if (!browserDetector.isFirefox()) {
-      callback(false);
-      return;
-    }
-
-    browserDetector
-      .getApi()
-      .runtime.getPlatformInfo()
-      .then(info => {
-        callback(info.os === 'android');
-      });
   }
 
   /**

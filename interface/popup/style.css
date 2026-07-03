@@ -350,15 +350,6 @@ button:focus {
   transition: all 100ms ease;
 }
 
-/* Firefox display outlines in a strange way */
-@-moz-document url-prefix() {
-  #cookie-container li .header:focus {
-    outline-offset: -3px;
-    outline: 2px solid var(--primary-outline-color);
-    border-radius: 3px;
-  }
-}
-
 #cookie-container li .header:hover .btns {
   opacity: 1;
 }

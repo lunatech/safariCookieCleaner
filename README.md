@@ -8,40 +8,16 @@ Cookie-Editor is designed to have a simple to use interface that let you do most
 You can easily create, edit and delete a cookie for the current page that you are visiting.
 There is also a handy button to mass delete all the cookies for the current page.
 
-Cookie-Editor is available for:
-- Google Chrome
-- Firefox
-- Safari
-- Edge
-- Opera.
-
-It should be possible to install it on any webkit browser, but keep in mind that only the previous five browsers are officially supported.
+Cookie-Editor is available for Safari.
 
 Cookie-Editor is available on mobile devices with an interface optimised for touchscreens:
-- Firefox for Android 
 - Safari for iOS
-- Edge for Android and iOS
 
 ## Installation
-### Install on Google Chrome
-Find this extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm?utm_campaign=github).  
-[![Chrome Web Store](readme/get-chrome.png)](https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm?utm_campaign=github)
-
-### Install on Firefox
-Find this extension on the [Firefox Add-ons site](https://addons.mozilla.org/addon/cookie-editor?utm_campaign=external-github-readme).  
-[![Firefox Add-ons](readme/get-firefox.webp)](https://addons.mozilla.org/addon/cookie-editor?utm_campaign=external-github-readme)
-
 ### Install on Safari
 Cookie-Editor is available for both Mac and iOS. It has been tested on Mac, iPhone and iPad.  
 Find this extension on the [App Store](https://apps.apple.com/app/apple-store/id6446215341?pt=126143671&ct=github&mt=8).  
 [![Apple App Store](readme/get-safari-mac.svg)](https://apps.apple.com/app/apple-store/id6446215341?pt=126143671&ct=github&mt=8)
-
-### Install on Microsoft Edge
-Find this extension on the [Microsoft Store](https://microsoftedge.microsoft.com/addons/detail/cookieeditor/neaplmfkghagebokkhpjpoebhdledlfi).
-
-### Install on Opera
-Find this extension on the [Opera Extensions site](https://addons.opera.com/en/extensions/details/cookie-editor-2/).  
-[![Opera add-ons](readme/get-opera.png )](https://addons.opera.com/en/extensions/details/cookie-editor-2/)
 
 ## Feature Suggestions or Bug Reports
 To submit a feature suggestion or file a bug report, please [create a new issue here](https://github.com/Moustachauve/cookie-editor/issues).
@@ -49,12 +25,8 @@ To submit a feature suggestion or file a bug report, please [create a new issue 
 ## How to build
 
 1. Run npm install to make sure you have all the required packages installed.
-2. Run the command `grunt`
-3. All the files are in the `dist` directory created
-
-### Note for Safari
-
-Safari needs to be built in Xcode. I have only tested building Cookie-Editor on Xcode 15.
+2. Safari needs to be built in Xcode, which will invoke `grunt build-safari` automatically
+   to prepare the extension resources in `build/safari`. Xcode 15+ is recommended.
 
 ## Thanks
 
@@ -66,8 +38,3 @@ Thanks to DigitalOcean for supporting open-source software.
   </a>
 </p>
 
-## Disclaimer
-
-This project is not an official Google project. It is not supported by
-Google and Google specifically disclaims all warranties as to its quality,
-merchantability, or fitness for a particular purpose.

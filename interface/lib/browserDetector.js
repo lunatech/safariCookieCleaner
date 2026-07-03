@@ -12,7 +12,6 @@ export class BrowserDetector {
     console.log('constructing a browserDetector');
     this.namespace = chrome || window.browser || window.chrome;
     this.supportPromises = false;
-    this.supportSidePanel = false;
 
     try {
       this.supportPromises =
@@ -22,15 +21,8 @@ export class BrowserDetector {
       /* empty */
     }
 
-    try {
-      this.supportSidePanel = typeof this.getApi().sidePanel !== 'undefined';
-      console.info('SidePanel support: ', this.supportSidePanel);
-    } catch (e) {
-      /* empty */
-    }
-
     if (Env.browserName === '@@browser_name') {
-      Env.browserName = Browsers.Chrome;
+      Env.browserName = Browsers.Safari;
       console.warn(
         'undefined browser name, using ' + Env.browserName + ' as fallback'
       );
@@ -48,30 +40,6 @@ export class BrowserDetector {
   }
 
   /**
-   * Checks if the current browser is Firefox.
-   * @return {boolean} true if the current browser is Firefox, otherwise false.
-   */
-  isFirefox() {
-    return Env.browserName === Browsers.Firefox;
-  }
-
-  /**
-   * Checks if the current browser is Chrome.
-   * @return {boolean} true if the current browser is Chrome, otherwise false.
-   */
-  isChrome() {
-    return Env.browserName === Browsers.Chrome;
-  }
-
-  /**
-   * Checks if the current browser is Edge.
-   * @return {boolean} true if the current browser is Edge, otherwise false.
-   */
-  isEdge() {
-    return Env.browserName === Browsers.Edge;
-  }
-
-  /**
    * Checks if the current browser is Safari.
    * @return {boolean} true if the current browser is Safari, otherwise false.
    */
@@ -86,15 +54,6 @@ export class BrowserDetector {
    */
   supportsPromises() {
     return this.supportPromises;
-  }
-
-  /**
-   * Checks if the current browser supports the Sidepanel API.
-   * @return {boolean} true if the current browser supports the Sidepanel API,
-   *     otherwise false.
-   */
-  supportsSidePanel() {
-    return this.supportSidePanel;
   }
 
   /**

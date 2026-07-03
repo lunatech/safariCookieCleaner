@@ -9,20 +9,12 @@ export class PermissionHandler {
   constructor(browserDetector) {
     this.browserDetector = browserDetector;
     // Urls that start with these values can't be requested for permission.
-    this.impossibleUrls = [
-      'about:',
-      'moz-extension:',
-      'chrome:',
-      'chrome-extension:',
-      'edge:',
-      'safari-web-extension:',
-    ];
+    this.impossibleUrls = ['about:', 'safari-web-extension:'];
   }
 
   /**
-   * Check if it is possible for a website to have permissions. for example, on
-   * firefox, it is impossible to check for permission on internal pages
-   * (about:[...]).
+   * Check if it is possible for a website to have permissions. For example,
+   * it is impossible to check for permission on internal pages (about:[...]).
    * @param {*} url Url to check.
    * @return {boolean} True if it's possible to request permission, otherwise
    *     false.

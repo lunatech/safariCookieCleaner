@@ -44,12 +44,6 @@ document.addEventListener('DOMContentLoaded', async event => {
     themeInput.value = optionHandler.getTheme();
     buttonBarTopInput.checked = optionHandler.getButtonBarTop();
     adsEnabledInput.checked = optionHandler.getAdsEnabled();
-
-    if (!browserDetector.isSafari()) {
-      document
-        .querySelectorAll('.github-sponsor')
-        .forEach(el => el.classList.remove('hidden'));
-    }
   }
 
   /**
