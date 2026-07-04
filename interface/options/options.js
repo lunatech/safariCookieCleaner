@@ -1,18 +1,18 @@
 /* eslint-disable require-jsdoc */
 
-import { AutomationStorage } from '../lib/automationStorage.js';
-import { BrowserDetector } from '../lib/browserDetector.js';
+import { AutomationStorage } from '../core/automationStorage.js';
 import {
   CleanupCadenceOptions,
   formatCadenceLabel,
-} from '../lib/cleanupRules.js';
+} from '../core/cleanupRules.js';
+import { CleanupScopes, getScopeLabel } from '../core/urlScope.js';
+import { BrowserDetector } from '../lib/browserDetector.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import {
   applyTheme,
   getThemePreference,
   setThemePreference,
 } from '../lib/themePreference.js';
-import { CleanupScopes, getScopeLabel } from '../lib/urlScope.js';
 
 const browserDetector = new BrowserDetector();
 const storageHandler = new GenericStorageHandler(browserDetector);

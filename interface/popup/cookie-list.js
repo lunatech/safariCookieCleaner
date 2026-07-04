@@ -1,13 +1,13 @@
 /* eslint-disable require-jsdoc */
 
-import { AutomationStorage } from '../lib/automationStorage.js';
+import { AutomationStorage } from '../core/automationStorage.js';
+import { CleanupCadences, formatCadenceLabel } from '../core/cleanupRules.js';
+import { deleteCookiesForCurrentTab } from '../core/cookieCleaner.js';
+import { CleanupScopes, getScopeDetails } from '../core/urlScope.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
-import { CleanupCadences, formatCadenceLabel } from '../lib/cleanupRules.js';
-import { deleteCookiesForCurrentTab } from '../lib/cookieCleaner.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
 import { PermissionHandler } from '../lib/permissionHandler.js';
 import { applyTheme, getThemePreference } from '../lib/themePreference.js';
-import { CleanupScopes, getScopeDetails } from '../lib/urlScope.js';
 
 const browserDetector = new BrowserDetector();
 const storageHandler = new GenericStorageHandler(browserDetector);

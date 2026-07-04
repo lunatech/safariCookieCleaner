@@ -46,14 +46,14 @@
 			containerPortal = C9D61EDF29BBF85900399458 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C9D61F1029BBF85A00399458;
-			remoteInfo = "Cookie-Editor Extension (iOS)";
+			remoteInfo = "Safari Cookie Cleaner Extension (iOS)";
 		};
 		C9D61F1D29BBF85A00399458 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C9D61EDF29BBF85900399458 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = C9D61F1A29BBF85A00399458;
-			remoteInfo = "Cookie-Editor Extension (macOS)";
+			remoteInfo = "Safari Cookie Cleaner Extension (macOS)";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -295,9 +295,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C9D61EF129BBF85A00399458 /* Cookie-Editor (iOS) */ = {
+		C9D61EF129BBF85A00399458 /* Safari Cookie Cleaner (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9D61F3629BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor (iOS)" */;
+			buildConfigurationList = C9D61F3629BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner (iOS)" */;
 			buildPhases = (
 				C9D61EEE29BBF85A00399458 /* Sources */,
 				C9D61EEF29BBF85A00399458 /* Frameworks */,
@@ -309,14 +309,14 @@
 			dependencies = (
 				C9D61F1429BBF85A00399458 /* PBXTargetDependency */,
 			);
-			name = "Cookie-Editor (iOS)";
-			productName = "Cookie-Editor (iOS)";
+			name = "Safari Cookie Cleaner (iOS)";
+			productName = "Safari Cookie Cleaner (iOS)";
 			productReference = C9D61EF229BBF85A00399458 /* Safari Cookie Cleaner.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C9D61F0329BBF85A00399458 /* Cookie-Editor (macOS) */ = {
+		C9D61F0329BBF85A00399458 /* Safari Cookie Cleaner (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9D61F3D29BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor (macOS)" */;
+			buildConfigurationList = C9D61F3D29BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner (macOS)" */;
 			buildPhases = (
 				C9D61F0029BBF85A00399458 /* Sources */,
 				C9D61F0129BBF85A00399458 /* Frameworks */,
@@ -328,14 +328,14 @@
 			dependencies = (
 				C9D61F1E29BBF85A00399458 /* PBXTargetDependency */,
 			);
-			name = "Cookie-Editor (macOS)";
-			productName = "Cookie-Editor (macOS)";
+			name = "Safari Cookie Cleaner (macOS)";
+			productName = "Safari Cookie Cleaner (macOS)";
 			productReference = C9D61F0429BBF85A00399458 /* Safari Cookie Cleaner.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C9D61F1029BBF85A00399458 /* Cookie-Editor Extension (iOS) */ = {
+		C9D61F1029BBF85A00399458 /* Safari Cookie Cleaner Extension (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9D61F3229BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor Extension (iOS)" */;
+			buildConfigurationList = C9D61F3229BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner Extension (iOS)" */;
 			buildPhases = (
 				C9D61F0D29BBF85A00399458 /* Sources */,
 				C9D61F0E29BBF85A00399458 /* Frameworks */,
@@ -346,14 +346,14 @@
 			);
 			dependencies = (
 			);
-			name = "Cookie-Editor Extension (iOS)";
-			productName = "Cookie-Editor Extension (iOS)";
+			name = "Safari Cookie Cleaner Extension (iOS)";
+			productName = "Safari Cookie Cleaner Extension (iOS)";
 			productReference = C9D61F1129BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		C9D61F1A29BBF85A00399458 /* Cookie-Editor Extension (macOS) */ = {
+		C9D61F1A29BBF85A00399458 /* Safari Cookie Cleaner Extension (macOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C9D61F3929BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor Extension (macOS)" */;
+			buildConfigurationList = C9D61F3929BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner Extension (macOS)" */;
 			buildPhases = (
 				C9D61F1729BBF85A00399458 /* Sources */,
 				C9D61F1829BBF85A00399458 /* Frameworks */,
@@ -364,8 +364,8 @@
 			);
 			dependencies = (
 			);
-			name = "Cookie-Editor Extension (macOS)";
-			productName = "Cookie-Editor Extension (macOS)";
+			name = "Safari Cookie Cleaner Extension (macOS)";
+			productName = "Safari Cookie Cleaner Extension (macOS)";
 			productReference = C9D61F1B29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
@@ -406,10 +406,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C9D61EF129BBF85A00399458 /* Cookie-Editor (iOS) */,
-				C9D61F0329BBF85A00399458 /* Cookie-Editor (macOS) */,
-				C9D61F1029BBF85A00399458 /* Cookie-Editor Extension (iOS) */,
-				C9D61F1A29BBF85A00399458 /* Cookie-Editor Extension (macOS) */,
+				C9D61EF129BBF85A00399458 /* Safari Cookie Cleaner (iOS) */,
+				C9D61F0329BBF85A00399458 /* Safari Cookie Cleaner (macOS) */,
+				C9D61F1029BBF85A00399458 /* Safari Cookie Cleaner Extension (iOS) */,
+				C9D61F1A29BBF85A00399458 /* Safari Cookie Cleaner Extension (macOS) */,
 			);
 		};
 /* End PBXProject section */
@@ -546,12 +546,12 @@
 /* Begin PBXTargetDependency section */
 		C9D61F1429BBF85A00399458 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9D61F1029BBF85A00399458 /* Cookie-Editor Extension (iOS) */;
+			target = C9D61F1029BBF85A00399458 /* Safari Cookie Cleaner Extension (iOS) */;
 			targetProxy = C9D61F1329BBF85A00399458 /* PBXContainerItemProxy */;
 		};
 		C9D61F1E29BBF85A00399458 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9D61F1A29BBF85A00399458 /* Cookie-Editor Extension (macOS) */;
+			target = C9D61F1A29BBF85A00399458 /* Safari Cookie Cleaner Extension (macOS) */;
 			targetProxy = C9D61F1D29BBF85A00399458 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -728,7 +728,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner.extension";
 				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -759,7 +759,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner.extension";
 				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -799,7 +799,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner";
 				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -837,7 +837,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner";
 				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -871,7 +871,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner.extension";
 				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -904,7 +904,7 @@
 					"-framework",
 					SafariServices,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner.extension";
 				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -942,7 +942,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner";
 				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -979,7 +979,7 @@
 					"-framework",
 					WebKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lunatech.safaricookiecleaner";
 				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -999,7 +999,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9D61F3229BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor Extension (iOS)" */ = {
+		C9D61F3229BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner Extension (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9D61F3329BBF85A00399458 /* Debug */,
@@ -1008,7 +1008,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9D61F3629BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor (iOS)" */ = {
+		C9D61F3629BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9D61F3729BBF85A00399458 /* Debug */,
@@ -1017,7 +1017,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9D61F3929BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor Extension (macOS)" */ = {
+		C9D61F3929BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner Extension (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9D61F3A29BBF85A00399458 /* Debug */,
@@ -1026,7 +1026,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C9D61F3D29BBF85A00399458 /* Build configuration list for PBXNativeTarget "Cookie-Editor (macOS)" */ = {
+		C9D61F3D29BBF85A00399458 /* Build configuration list for PBXNativeTarget "Safari Cookie Cleaner (macOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C9D61F3E29BBF85A00399458 /* Debug */,

@@ -24,6 +24,7 @@
   },
   "scripts": {
     "lint": "eslint . --config eslint.config.mjs",
-    "lint:fix": "eslint . --fix --config eslint.config.mjs"
+    "lint:fix": "eslint . --fix --config eslint.config.mjs",
+    "test:core": "node --test tests/core/*.test.mjs"
   }
 }
