@@ -10,9 +10,15 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  min-width: 360px;
+  width: 360px;
+  max-height: 500px;
+  overflow-y: auto;
   background: var(--primary-surface-color);
   color: var(--primary-text-color);
 }
@@ -33,15 +39,15 @@ button {
 
 .popup-shell {
   display: grid;
-  gap: 12px;
-  padding: 14px;
+  gap: 8px;
+  padding: 10px;
 }
 
 .card {
   border: 1px solid var(--secondary-outline-color);
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--secondary-surface-color);
-  padding: 14px;
+  padding: 10px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
@@ -117,17 +123,17 @@ h2 {
 
 .scope-list {
   display: grid;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .scope-card {
   display: grid;
-  gap: 8px;
-  border-radius: 14px;
+  gap: 4px;
+  border-radius: 12px;
   border: 1px solid var(--secondary-outline-color);
   background: var(--primary-surface-color);
-  padding: 12px;
+  padding: 8px 10px;
 }
 
 .scope-primary {
@@ -164,14 +170,14 @@ select {
 
 .button-grid {
   display: grid;
-  gap: 10px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .button,
 .link-button {
   border: 0;
-  padding: 11px 14px;
+  padding: 8px 12px;
   font-weight: 600;
   transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }

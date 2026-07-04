@@ -2,7 +2,10 @@
 
 import { AutomationStorage } from '../core/automationStorage.js';
 import { CleanupCadences, formatCadenceLabel } from '../core/cleanupRules.js';
-import { deleteCookiesForCurrentTab } from '../core/cookieCleaner.js';
+import {
+  deleteCookiesForCurrentTab,
+  getCookiesForCurrentTab,
+} from '../core/cookieCleaner.js';
 import { CleanupScopes, getScopeDetails } from '../core/urlScope.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
@@ -20,9 +23,18 @@ const state = {
   hasPermission: false,
 };
 
+let hasRunStartupCookieProbe = false;
+
 const elements = {};
 
+function logPopupEvent(event, details = {}) {
+  console.log('[SafariCookieCleaner][popup]', event, details);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  logPopupEvent('Popup opened', {
+    href: window.location.href,
+  });
   cacheElements();
   bindEvents();
   await updateTheme();
@@ -58,6 +70,9 @@ function bindEvents() {
       return;
     }
 
+    logPopupEvent('Request permission clicked', {
+      currentTabUrl: state.currentTab.url,
+    });
     const granted = await permissionHandler.requestPermission(
       state.currentTab.url
     );
@@ -71,22 +86,37 @@ function bindEvents() {
   });
 
   elements.deleteSite.addEventListener('click', async () => {
+    logPopupEvent('Delete current site clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
     await runManualCleanup(CleanupScopes.Site);
   });
 
   elements.deleteSubdomain.addEventListener('click', async () => {
+    logPopupEvent('Delete subdomain clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
     await runManualCleanup(CleanupScopes.Subdomain);
   });
 
   elements.autoSite.addEventListener('click', async () => {
+    logPopupEvent('Auto-delete site clicked', {
+      currentTabUrl: state.currentTab?.url,
+      cadence: elements.cadence.value,
+    });
     await saveRule(CleanupScopes.Site);
   });
 
   elements.autoSubdomain.addEventListener('click', async () => {
+    logPopupEvent('Auto-delete subdomain clicked', {
+      currentTabUrl: state.currentTab?.url,
+      cadence: elements.cadence.value,
+    });
     await saveRule(CleanupScopes.Subdomain);
   });
 
   elements.manageAutomation.addEventListener('click', async () => {
+    logPopupEvent('Manage automation clicked');
     await browserDetector.getApi().runtime.openOptionsPage();
   });
 }
@@ -107,6 +137,9 @@ function watchSystemTheme() {
 async function loadCurrentTab() {
   try {
     state.currentTab = await getCurrentTab();
+    logPopupEvent('Resolved current tab', {
+      currentTab: state.currentTab,
+    });
     if (!state.currentTab || !state.currentTab.url) {
       showUnsupportedState('Open a website in Safari to clean its cookies.');
       return;
@@ -119,6 +152,9 @@ async function loadCurrentTab() {
     }
 
     state.scopeDetails = getScopeDetails(state.currentTab.url);
+    logPopupEvent('Computed scope details', {
+      scopeDetails: state.scopeDetails,
+    });
     renderScopeDetails();
     await refreshPermissionsAndRules();
   } catch (error) {
@@ -135,6 +171,10 @@ async function refreshPermissionsAndRules() {
   state.hasPermission = await permissionHandler.checkPermissions(
     state.currentTab.url
   );
+  logPopupEvent('Permission check completed', {
+    currentTabUrl: state.currentTab.url,
+    hasPermission: state.hasPermission,
+  });
   elements.permissionCard.classList.toggle('hidden', state.hasPermission);
   setActionButtonsDisabled(!state.hasPermission);
 
@@ -147,6 +187,28 @@ async function refreshPermissionsAndRules() {
   }
 
   await refreshRuleStatus();
+  await probeStartupCookies();
+}
+
+async function probeStartupCookies() {
+  if (!state.currentTab || !state.hasPermission || hasRunStartupCookieProbe) {
+    return;
+  }
+
+  hasRunStartupCookieProbe = true;
+  logPopupEvent('Running startup cookie probe', {
+    currentTabUrl: state.currentTab.url,
+    cookieStoreId: state.currentTab.cookieStoreId,
+  });
+  const cookies = await getCookiesForCurrentTab(
+    browserDetector,
+    state.currentTab,
+    'startup probe'
+  );
+  logPopupEvent('Startup cookie probe finished', {
+    currentTabUrl: state.currentTab.url,
+    cookieCount: cookies.length,
+  });
 }
 
 function renderScopeDetails() {
@@ -197,6 +259,11 @@ async function runManualCleanup(scope) {
     return;
   }
 
+  logPopupEvent('Manual cleanup starting', {
+    scope: scope,
+    currentTabUrl: state.currentTab.url,
+    hasPermission: state.hasPermission,
+  });
   const button =
     scope === CleanupScopes.Site
       ? elements.deleteSite
@@ -208,6 +275,12 @@ async function runManualCleanup(scope) {
       scope
     );
 
+    logPopupEvent('Manual cleanup finished', {
+      scope: scope,
+      currentTabUrl: state.currentTab.url,
+      matchedCount: result.matchedCount,
+      removedCount: result.removedCount,
+    });
     if (!result.matchedCount) {
       showStatus(
         scope === CleanupScopes.Site
@@ -231,6 +304,11 @@ async function saveRule(scope) {
     return;
   }
 
+  logPopupEvent('Saving cleanup rule', {
+    scope: scope,
+    currentTabUrl: state.currentTab.url,
+    cadence: elements.cadence.value,
+  });
   const button =
     scope === CleanupScopes.Site ? elements.autoSite : elements.autoSubdomain;
   await withBusy(button, async () => {
@@ -240,6 +318,12 @@ async function saveRule(scope) {
       elements.cadence.value || CleanupCadences.OneHour
     );
     await refreshRuleStatus();
+    logPopupEvent('Cleanup rule saved', {
+      scope: scope,
+      currentTabUrl: state.currentTab.url,
+      cadence: rule.cadence,
+      ruleId: rule.id,
+    });
     showStatus(
       `${scope === CleanupScopes.Site ? 'Site' : 'Subdomain'} cleanup saved for every ${formatCadenceLabel(rule.cadence)}.`,
       'success'
@@ -249,16 +333,26 @@ async function saveRule(scope) {
 
 async function withBusy(button, work) {
   const originalText = button.textContent;
+  logPopupEvent('Busy action started', {
+    buttonLabel: originalText,
+  });
   button.disabled = true;
   button.textContent = 'Working…';
   try {
     await work();
   } catch (error) {
     console.error('Action failed', error);
+    logPopupEvent('Busy action failed', {
+      buttonLabel: originalText,
+      error: error.message || String(error),
+    });
     showStatus(error.message || 'That action failed.', 'error');
   } finally {
     button.disabled = false;
     button.textContent = originalText;
+    logPopupEvent('Busy action finished', {
+      buttonLabel: originalText,
+    });
   }
 }
 
@@ -270,6 +364,9 @@ function setActionButtonsDisabled(disabled) {
 }
 
 function showUnsupportedState(message) {
+  logPopupEvent('Unsupported popup state', {
+    message: message,
+  });
   elements.currentSiteHeading.textContent = 'No website available';
   elements.hostnameChip.textContent = 'Unavailable';
   elements.siteTarget.textContent = '—';
@@ -283,6 +380,10 @@ function showUnsupportedState(message) {
 }
 
 function showStatus(message, tone) {
+  logPopupEvent('Status updated', {
+    message: message,
+    tone: tone || 'info',
+  });
   elements.status.textContent = message;
   elements.status.className = `status ${tone || 'info'}`;
 }

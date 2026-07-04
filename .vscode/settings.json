@@ -17,5 +17,6 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "sweetpad.build.xcodeWorkspacePath": "safari/Cookie-Editor/Cookie-Editor.xcodeproj/project.xcworkspace"
 }
