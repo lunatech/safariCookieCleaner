@@ -3,26 +3,29 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
-
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
     <link rel="stylesheet" href="../Style.css">
     <script src="../Script.js" defer></script>
 </head>
 <body>
-    <img src="../Icon.png" width="128" height="128" alt="Cookie-Editor Icon">
-    <p class="platform-ios">You can turn on Cookie-Editor’s Safari extension in Settings.</p>
-    <p class="platform-ios">
-        Here's how to access Cookie-Editor in Safari:<br>
-        <img src="../screenshot-ios.jpg" width="200" height="200" alt="How to open Cookie-Editor">
-    </p>
-    <p class="platform-mac state-unknown">You can turn on Cookie-Editor’s extension in Safari Extensions preferences.</p>
-    <p class="platform-mac state-on">Cookie-Editor’s extension is currently on. You can turn it off in Safari Extensions preferences.</p>
-    <p class="platform-mac state-off">Cookie-Editor’s extension is currently off. You can turn it on in Safari Extensions preferences.</p>
-    <button class="platform-mac open-preferences">Quit and Open Safari Extensions Preferences…</button>
-    <p class="limitations">
-        Due to some limitation on the Safari browser, not all cookies can be displayed. 
-        For example, Safari can't display cookies with "HTTPOnly" set to true.
-    </p>
+    <main class="shell">
+        <img src="../Icon.png" width="128" height="128" alt="Safari Cookie Cleaner icon">
+        <h1>Safari Cookie Cleaner</h1>
+        <p class="intro">
+            Targeted cookie cleanup for Safari on macOS and iOS.
+        </p>
+        <p class="platform-ios">Turn on Safari Cookie Cleaner in Settings &gt; Safari &gt; Extensions.</p>
+        <p class="platform-ios">
+            Then open Safari, tap the extensions button, and choose Safari Cookie Cleaner.<br>
+            <img src="../screenshot-ios.jpg" width="200" height="200" alt="How to open Safari Cookie Cleaner">
+        </p>
+        <p class="platform-mac state-unknown">Turn on Safari Cookie Cleaner in Safari’s Extensions settings.</p>
+        <p class="platform-mac state-on">Safari Cookie Cleaner is on. You can turn it off in Safari’s Extensions settings.</p>
+        <p class="platform-mac state-off">Safari Cookie Cleaner is off. You can turn it on in Safari’s Extensions settings.</p>
+        <button class="platform-mac open-preferences">Quit and Open Safari Extensions Settings…</button>
+        <p class="limitations">
+            Scheduled cleanup runs best on macOS. On iPhone and iPad, Safari may delay background cleanups until the system wakes the extension again.
+        </p>
+    </main>
 </body>
 </html>

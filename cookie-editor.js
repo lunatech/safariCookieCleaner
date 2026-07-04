@@ -1,235 +1,157 @@
+/* eslint-disable require-jsdoc */
+
+import { AutomationStorage } from './interface/lib/automationStorage.js';
 import { BrowserDetector } from './interface/lib/browserDetector.js';
 import { Browsers } from './interface/lib/browsers.js';
-import { PermissionHandler } from './interface/lib/permissionHandler.js';
+import {
+  getCadenceOption,
+  getRuleAlarmName,
+  getRuleIdFromAlarmName,
+  isRuleAlarmName,
+} from './interface/lib/cleanupRules.js';
+import { deleteCookiesForRule } from './interface/lib/cookieCleaner.js';
+import { GenericStorageHandler } from './interface/lib/genericStorageHandler.js';
 
-(function () {
+const browserDetector = new BrowserDetector();
+const storageHandler = new GenericStorageHandler(browserDetector);
+const automationStorage = new AutomationStorage(storageHandler);
+const api = browserDetector.getApi();
+
+(async function initBackground() {
   console.log('starting background script');
-  // TODO: Separate connections from CookieHandler and OptionsHandler.
-  // It would also be cool to separate their whole behavior in separate class
-  // that extends a generic one.
-  const connections = {};
-  const browserDetector = new BrowserDetector();
-  const permissionHandler = new PermissionHandler(browserDetector);
+  await configurePopupForIos();
+  if (api.alarms) {
+    api.alarms.onAlarm.addListener(onAlarm);
+  }
+  if (api.storage?.onChanged) {
+    api.storage.onChanged.addListener(onStorageChanged);
+  }
+  if (api.runtime?.onInstalled) {
+    api.runtime.onInstalled.addListener(syncRuleAlarms);
+  }
+  if (api.runtime?.onStartup) {
+    api.runtime.onStartup.addListener(syncRuleAlarms);
+  }
+  await syncRuleAlarms();
+})();
 
-  isSafariIos(function (response) {
-    if (response) {
-      // If we detect the user is on iOS, mark the browser
-      // as Safari in case it was edge or something else.
-      browserDetector.overrideBrowserName(Browsers.Safari);
-      console.log('Setting up iOS popup');
-      const popupOptions = {
-        popup: '/interface/popup-mobile/cookie-list.html',
-      };
-      browserDetector.getApi().action.setPopup(popupOptions);
-    }
-  });
-
-  // Setting up event listeners
-  browserDetector.getApi().runtime.onConnect.addListener(onConnect);
-  browserDetector.getApi().runtime.onMessage.addListener(handleMessage);
-  browserDetector.getApi().tabs.onUpdated.addListener(onTabsChanged);
-
-  /**
-   * Handles messages coming from the front end, mostly from the dev tools.
-   * Devtools require special handling because not all APIs are available in
-   * there, such as tab and permissions.
-   * @param {object} request contains the message.
-   * @param {MessageSender} sender references the sender of the message, not
-   *    used.
-   * @param {function} sendResponse callback to respond to the sender.
-   * @return {boolean} sometimes
-   */
-  function handleMessage(request, sender, sendResponse) {
-    console.log('message received: ' + (request.type || 'unknown'));
-    switch (request.type) {
-      case 'getTabs': {
-        browserDetector.getApi().tabs.query({}, function (tabs) {
-          sendResponse(tabs);
-        });
-        return true;
-      }
-      case 'getCurrentTab': {
-        browserDetector
-          .getApi()
-          .tabs.query(
-            { active: true, currentWindow: true },
-            function (tabInfo) {
-              sendResponse(tabInfo);
-            }
-          );
-        return true;
-      }
-      case 'getAllCookies': {
-        const getAllCookiesParams = {
-          url: request.params.url,
-        };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams)
-            .then(sendResponse);
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.getAll(getAllCookiesParams, sendResponse);
-        }
-        return true;
-      }
-      case 'saveCookie': {
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie)
-            .then(
-              cookie => {
-                sendResponse(null, cookie);
-              },
-              error => {
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, null);
-              }
-            );
-        } else {
-          browserDetector
-            .getApi()
-            .cookies.set(request.params.cookie, cookie => {
-              if (cookie) {
-                sendResponse(null, cookie);
-              } else {
-                const error = browserDetector.getApi().runtime.lastError;
-                console.error('Failed to create cookie', error);
-                sendResponse(error.message, cookie);
-              }
-            });
-        }
-        return true;
-      }
-      case 'removeCookie': {
-        const removeParams = {
-          name: request.params.name,
-          url: request.params.url,
-        };
-        if (browserDetector.supportsPromises()) {
-          browserDetector
-            .getApi()
-            .cookies.remove(removeParams)
-            .then(sendResponse);
-        } else {
-          browserDetector.getApi().cookies.remove(removeParams, sendResponse);
-        }
-        return true;
-      }
-      case 'permissionsContains': {
-        permissionHandler.checkPermissions(request.params).then(sendResponse);
-        return true;
-      }
-      case 'permissionsRequest': {
-        permissionHandler.requestPermission(request.params).then(sendResponse);
-        return true;
-      }
-      case 'optionsChanged': {
-        sendMessageToAllTabs('optionsChanged', {
-          from: request.params.from,
-        });
-        return true;
-      }
-    }
+async function configurePopupForIos() {
+  const isSafariIos = await detectSafariIos();
+  if (!isSafariIos) {
+    return;
   }
 
-  /**
-   * Handles connections from clients to this script.
-   * @param {Port} port An object which allows two way communication with other
-   *    pages.
-   */
-  function onConnect(port) {
-    const extensionListener = function (request, port) {
-      console.log('port message received: ' + (request.type || 'unknown'));
-      switch (request.type) {
-        case 'init_cookieHandler':
-          console.log(
-            'Devtool cookieHandler connected on tab ' + request.tabId
-          );
-          connections[request.tabId] = port;
-          return;
-        case 'init_optionsHandler':
-          console.log('optionsHandler connected: ' + port.name);
-          connections[port.name] = port;
-          return;
-      }
+  browserDetector.overrideBrowserName(Browsers.Safari);
+  await api.action.setPopup({
+    popup: '/interface/popup-mobile/cookie-list.html',
+  });
+}
 
-      // other message handling.
-    };
+async function detectSafariIos() {
+  const platformInfo = await api.runtime.getPlatformInfo();
+  return platformInfo.os === 'ios';
+}
 
-    // Listen to messages sent from the DevTools page.
-    port.onMessage.addListener(extensionListener);
+async function onStorageChanged(changes, areaName) {
+  if (areaName !== 'local' || !changes.cleanup_rules) {
+    return;
+  }
 
-    port.onDisconnect.addListener(function (port) {
-      port.onMessage.removeListener(extensionListener);
-      const tabs = Object.keys(connections);
-      for (let i = 0; i < tabs.length; i++) {
-        if (connections[tabs[i]] === port) {
-          console.log('script disconnected on tab ' + tabs[i]);
-          delete connections[tabs[i]];
-          break;
-        }
-      }
+  await syncRuleAlarms();
+}
+
+async function syncRuleAlarms() {
+  if (!api.alarms) {
+    return;
+  }
+
+  const rules = await automationStorage.listRules();
+  const enabledRules = rules.filter(rule => rule.enabled !== false);
+  const enabledAlarmNames = new Set(
+    enabledRules.map(rule => getRuleAlarmName(rule.id))
+  );
+  const alarms = await getAllAlarms();
+
+  await Promise.all(
+    alarms
+      .filter(alarm => {
+        return (
+          isRuleAlarmName(alarm.name) && !enabledAlarmNames.has(alarm.name)
+        );
+      })
+      .map(alarm => clearAlarm(alarm.name))
+  );
+
+  for (const rule of enabledRules) {
+    await scheduleRuleAlarm(rule);
+  }
+}
+
+async function scheduleRuleAlarm(rule) {
+  const alarmName = getRuleAlarmName(rule.id);
+  const minutes = getCadenceOption(rule.cadence).minutes;
+  await clearAlarm(alarmName);
+  await createAlarm(alarmName, {
+    delayInMinutes: minutes,
+    periodInMinutes: minutes,
+  });
+}
+
+async function onAlarm(alarm) {
+  if (!isRuleAlarmName(alarm.name)) {
+    return;
+  }
+
+  const ruleId = getRuleIdFromAlarmName(alarm.name);
+  const rules = await automationStorage.listRules();
+  const rule = rules.find(candidate => candidate.id === ruleId);
+  if (!rule || rule.enabled === false) {
+    await clearAlarm(alarm.name);
+    return;
+  }
+
+  try {
+    const result = await deleteCookiesForRule(browserDetector, rule);
+    const status = !result.matchedCount
+      ? 'No matching cookies found.'
+      : `Removed ${result.removedCount} cookie${result.removedCount === 1 ? '' : 's'}.`;
+    await automationStorage.recordRuleRun(rule.id, {
+      status: status,
+      removedCount: result.removedCount,
+    });
+  } catch (error) {
+    console.error('Scheduled cleanup failed', error);
+    await automationStorage.recordRuleRun(rule.id, {
+      status: `Failed: ${error.message || 'Unknown error'}`,
+      removedCount: 0,
     });
   }
+}
 
-  /**
-   * Sends a message to a script running in a specific tab.
-   * @param {number} tabId Id of the tab to send the message to.
-   * @param {string} type Type of message, used by the client to parse the data.
-   * @param {any} data Data to send to the client.
-   */
-  function sendMessageToTab(tabId, type, data) {
-    if (tabId in connections) {
-      connections[tabId].postMessage({
-        type: type,
-        data: data,
-      });
-    }
+async function getAllAlarms() {
+  if (browserDetector.supportsPromises()) {
+    return api.alarms.getAll();
   }
 
-  /**
-   * Sends a message to all the tabs connected.
-   * @param {string} type Type of message, used by the client to parse the data.
-   * @param {any} data Data to send to the client.
-   */
-  function sendMessageToAllTabs(type, data) {
-    const tabs = Object.keys(connections);
-    for (let i = 0; i < tabs.length; i++) {
-      sendMessageToTab(tabs[i], type, data);
-    }
+  return new Promise(resolve => {
+    api.alarms.getAll(resolve);
+  });
+}
+
+async function clearAlarm(name) {
+  if (browserDetector.supportsPromises()) {
+    return api.alarms.clear(name);
   }
 
-  /**
-   * Handles the event that is fired when a tab is updated.
-   * @param {number} tabId The id of the tab that changed.
-   * @param {object} changeInfo Properties of the tab that changed.
-   * @param {object} _tab The new state of the tab.
-   */
-  function onTabsChanged(tabId, changeInfo, _tab) {
-    console.log('tabs changed', tabId, changeInfo, _tab);
-    sendMessageToTab(tabId, 'tabsChanged', changeInfo);
+  return new Promise(resolve => {
+    api.alarms.clear(name, resolve);
+  });
+}
+
+async function createAlarm(name, info) {
+  if (browserDetector.supportsPromises()) {
+    return api.alarms.create(name, info);
   }
 
-  /**
-   * Special function to detect if we are running on Safari on iOS.
-   *
-   * Any browser running on iOS would be considered Safari since they
-   * all are wrappers.
-   *
-   * @param {function} callback Responds true if it is Safari on iOS,
-   *     otherwise false.
-   */
-  function isSafariIos(callback) {
-    browserDetector
-      .getApi()
-      .runtime.getPlatformInfo()
-      .then(info => {
-        console.log('check for safari on ios: ', info.os);
-        callback(info.os === 'ios');
-      });
-  }
-})();
+  return api.alarms.create(name, info);
+}

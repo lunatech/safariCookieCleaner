@@ -1,9 +1,9 @@
 {
 	"manifest_version": 3,
-	"name": "Cookie-Editor",
+	"name": "Safari Cookie Cleaner",
 	"version": "1.13.0",
 	"author": "Moustachauve",
-	"description": "Simple powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab",
+	"description": "Delete cookies for the current site or current subdomain, then keep selected Safari sites clean on a schedule.",
 	"offline_enabled": true,
 	"background": {
 		"service_worker": "cookie-editor.js",
@@ -16,14 +16,14 @@
 			"32": "icons/cookie-32-filled.png",
 			"48": "icons/cookie-48-filled.png"
 		},
-		"default_title": "Cookie-Editor",
+		"default_title": "Safari Cookie Cleaner",
 		"default_popup": "interface/popup/cookie-list.html"
 	},
-	"devtools_page": "interface/devtools/devtool.html",
 	"options_ui": {
 		"page": "interface/options/options.html"
 	},
 	"permissions": [
+		"alarms",
 		"cookies",
 		"tabs",
 		"storage"
