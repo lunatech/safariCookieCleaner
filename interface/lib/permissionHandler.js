@@ -13,6 +13,15 @@ export class PermissionHandler {
   }
 
   /**
+   * Logs permission-related diagnostics.
+   * @param {string} event
+   * @param {object} details
+   */
+  logPermissionEvent(event, details = {}) {
+    console.log('[SafariCookieCleaner][permissions]', event, details);
+  }
+
+  /**
    * Check if it is possible for a website to have permissions. For example,
    * it is impossible to check for permission on internal pages (about:[...]).
    * @param {*} url Url to check.
@@ -21,13 +30,27 @@ export class PermissionHandler {
    */
   canHavePermissions(url) {
     if (url === '') {
+      this.logPermissionEvent('Permission eligibility evaluated', {
+        url: url,
+        canHavePermissions: false,
+        reason: 'empty-url',
+      });
       return false;
     }
     for (const impossibleUrl of this.impossibleUrls) {
       if (url.indexOf(impossibleUrl) === 0) {
+        this.logPermissionEvent('Permission eligibility evaluated', {
+          url: url,
+          canHavePermissions: false,
+          reason: `blocked-prefix:${impossibleUrl}`,
+        });
         return false;
       }
     }
+    this.logPermissionEvent('Permission eligibility evaluated', {
+      url: url,
+      canHavePermissions: true,
+    });
     return true;
   }
 
@@ -52,15 +75,29 @@ export class PermissionHandler {
       console.error(err);
     }
 
+    this.logPermissionEvent('Checking permissions', {
+      url: url,
+      origins: testPermission.origins,
+    });
+
     // If we don't have access to the permission API, assume we have
     // access. Safari devtools can't access the API.
     if (typeof this.browserDetector.getApi().permissions === 'undefined') {
+      this.logPermissionEvent('Permission API unavailable; assuming access', {
+        url: url,
+      });
       return true;
     }
 
-    return await this.browserDetector
+    const hasPermission = await this.browserDetector
       .getApi()
       .permissions.contains(testPermission);
+    this.logPermissionEvent('Permission check completed', {
+      url: url,
+      origins: testPermission.origins,
+      hasPermission: hasPermission,
+    });
+    return hasPermission;
   }
 
   /**
@@ -82,7 +119,19 @@ export class PermissionHandler {
     } catch (err) {
       console.error(err);
     }
-    return this.browserDetector.getApi().permissions.request(permission);
+    this.logPermissionEvent('Requesting permissions', {
+      url: url,
+      origins: permission.origins,
+    });
+    const granted = await this.browserDetector
+      .getApi()
+      .permissions.request(permission);
+    this.logPermissionEvent('Permission request completed', {
+      url: url,
+      origins: permission.origins,
+      granted: granted,
+    });
+    return granted;
   }
 
   /**

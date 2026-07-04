@@ -62,6 +62,45 @@ Find the app on the [App Store](https://apps.apple.com/app/apple-store/id6446215
 
 5. Re-run `./node_modules/.bin/grunt build-safari` after every extension change you want embedded in the native app.
 
+### Install the local macOS build on this Mac
+1. Build the extension payload and the macOS app (see steps above), then copy the built app into `/Applications`:
+
+   ```bash
+   ./node_modules/.bin/grunt build-safari
+   xcodebuild \
+     -project safari/Cookie-Editor/Cookie-Editor.xcodeproj \
+     -scheme "Safari Cookie Cleaner (macOS)" \
+     -configuration Debug \
+     -derivedDataPath build/DerivedData-mac \
+     build
+   cp -R "build/DerivedData-mac/Build/Products/Debug/Safari Cookie Cleaner.app" "/Applications/Safari Cookie Cleaner.app"
+   ```
+
+2. Register and launch the installed app so Safari can see its embedded extension:
+
+   ```bash
+   /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f "/Applications/Safari Cookie Cleaner.app"
+   open "/Applications/Safari Cookie Cleaner.app"
+   ```
+
+3. In Safari, turn on the Develop menu: **Safari > Settings > Advanced** and check **Show features for web developers**.
+4. Because a local debug build is signed with an Apple Development certificate instead of coming from the App Store, Safari treats it as unsigned. From the menu bar, choose **Develop > Allow Unsigned Extensions** and check it. This resets every time Safari restarts, so re-check it whenever the extension disappears after a relaunch.
+5. Enable the extension: **Safari > Settings > Extensions**, turn on **Safari Cookie Cleaner**, then grant it access to the sites you want to test.
+6. Open the extension's toolbar icon to load the popup, click **Delete current site**, **Delete this subdomain only**, or the auto-delete buttons to exercise the flows, and open **Manage automation** to reach the options page.
+
+### View extension logs in Safari's console
+All of the instrumentation added for debugging is plain `console.log`/`console.error` output tagged with a component prefix:
+- `[SafariCookieCleaner][popup]` — popup lifecycle and every button click
+- `[SafariCookieCleaner][cookieCleaner]` — every cookie fetch, filter, and removal, including the startup cookie probe
+- `[SafariCookieCleaner][permissions]` — permission eligibility checks, requests, and results
+
+To see these logs:
+1. Confirm the Develop menu is enabled (see step 3 above).
+2. **Background script logs** (`cookie-editor.js`, scheduled cleanup, alarms): **Develop > Web Extension Background Content > Safari Cookie Cleaner**. This opens a Web Inspector window with a **Console** tab attached to the background service worker.
+3. **Popup logs**: click the Safari Cookie Cleaner toolbar icon to open the popup, then open the **Develop** menu again. The open popup shows up directly in that menu (listed by the extension's process, not under a submenu). Selecting it opens Web Inspector for the popup; use its **Console** tab. The popup closes as soon as it loses focus, so keep Web Inspector open before you click elsewhere.
+4. **Options ("Manage automation") page logs**: open the page from the popup's **Manage automation** link, or by opening `Safari > Settings > Extensions > Safari Cookie Cleaner > Preferences…`. With that tab open, use **Develop > [page title]** to attach Web Inspector, then check its **Console** tab.
+5. Reproduce the issue (for example, open the popup on a fresh tab) and watch the console for the `Running startup cookie probe` / `Fetching cookies` / `Fetch complete` log lines to see whether Safari returned any cookies on the first request.
+
 ### Staging / TestFlight
 1. Bump the extension version in `package.json`.
 2. In Xcode, update `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` for the app and extension targets so the native app version matches the extension bundle version you are shipping.
