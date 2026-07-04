@@ -56,6 +56,72 @@ async function getAllCookies(browserDetector, details, reason) {
   });
 }
 
+async function getAllCookieStores(browserDetector) {
+  const api = getApi(browserDetector);
+  if (browserDetector.supportsPromises()) {
+    return api.cookies.getAllCookieStores();
+  }
+
+  return new Promise(resolve => {
+    api.cookies.getAllCookieStores(stores => {
+      resolve(stores || []);
+    });
+  });
+}
+
+/**
+ * Fetches cookies across every cookie store, explicitly resolving real store
+ * ids instead of leaving `storeId` undefined.
+ *
+ * Safari 18+ has a documented bug where `cookies.getAll()` returns an empty
+ * array on the first call when the query relies on an implicit/undefined
+ * `storeId`. Explicitly enumerating stores via `getAllCookieStores()` and
+ * querying each real store id avoids that broken code path.
+ * @param {BrowserDetector} browserDetector
+ * @param {object} queryDetails Query details minus `storeId`.
+ * @param {string} reason
+ * @return {Promise<Array>}
+ */
+async function getAllCookiesAcrossStores(
+  browserDetector,
+  queryDetails,
+  reason
+) {
+  const stores = await getAllCookieStores(browserDetector);
+  console.log(`${LOG_PREFIX} Resolved cookie stores`, {
+    reason: reason,
+    storeIds: stores.map(store => store.id),
+  });
+
+  if (!stores.length) {
+    // No stores reported; fall back to a single query without a storeId
+    // rather than returning nothing.
+    return getAllCookies(
+      browserDetector,
+      queryDetails,
+      `${reason} (no stores reported)`
+    );
+  }
+
+  const cookiesByStore = await Promise.all(
+    stores.map(store => {
+      return getAllCookies(
+        browserDetector,
+        { ...queryDetails, storeId: store.id },
+        `${reason} (store ${store.id})`
+      );
+    })
+  );
+
+  const cookies = cookiesByStore.flat();
+  console.log(`${LOG_PREFIX} Combined fetch across stores`, {
+    reason: reason,
+    storeCount: stores.length,
+    totalCount: cookies.length,
+  });
+  return cookies;
+}
+
 async function removeCookie(browserDetector, details) {
   const api = getApi(browserDetector);
   console.log(`${LOG_PREFIX} Removing cookie`, details);
@@ -106,11 +172,10 @@ export async function getCookiesForCurrentTab(
   tab,
   reason = 'current-tab fetch'
 ) {
-  return getAllCookies(
+  return getAllCookiesAcrossStores(
     browserDetector,
     {
       url: tab.url,
-      storeId: tab.cookieStoreId,
     },
     reason
   );
@@ -147,7 +212,11 @@ export async function deleteCookiesForCurrentTab(browserDetector, tab, scope) {
 }
 
 export async function deleteCookiesForRule(browserDetector, rule) {
-  const cookies = await getAllCookies(browserDetector, {}, 'scheduled rule');
+  const cookies = await getAllCookiesAcrossStores(
+    browserDetector,
+    {},
+    'scheduled rule'
+  );
   const cookiesToDelete = filterCookiesForRule(cookies, rule);
   console.log(`${LOG_PREFIX} Filtered scheduled-rule cookies`, {
     ruleId: rule.id,
