@@ -1,15 +1,15 @@
 /* eslint-disable require-jsdoc */
 
-import { AutomationStorage } from './interface/lib/automationStorage.js';
-import { BrowserDetector } from './interface/lib/browserDetector.js';
-import { Browsers } from './interface/lib/browsers.js';
+import { AutomationStorage } from './interface/core/automationStorage.js';
 import {
   getCadenceOption,
   getRuleAlarmName,
   getRuleIdFromAlarmName,
   isRuleAlarmName,
-} from './interface/lib/cleanupRules.js';
-import { deleteCookiesForRule } from './interface/lib/cookieCleaner.js';
+} from './interface/core/cleanupRules.js';
+import { deleteCookiesForRule } from './interface/core/cookieCleaner.js';
+import { BrowserDetector } from './interface/lib/browserDetector.js';
+import { Browsers } from './interface/lib/browsers.js';
 import { GenericStorageHandler } from './interface/lib/genericStorageHandler.js';
 
 const browserDetector = new BrowserDetector();

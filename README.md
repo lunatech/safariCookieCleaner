@@ -25,8 +25,6 @@ Find the app on the [App Store](https://apps.apple.com/app/apple-store/id6446215
 [![Apple App Store](readme/get-safari-mac.svg)](https://apps.apple.com/app/apple-store/id6446215341?pt=126143671&ct=github&mt=8)
 
 ## Build and deploy
-The Xcode project and schemes still use the legacy names `Cookie-Editor (macOS)` and `Cookie-Editor (iOS)`. The shipped app name is Safari Cookie Cleaner, but those are the scheme names you need for `xcodebuild`.
-
 ### Local development
 1. Install dependencies and build the Safari extension payload:
 
@@ -35,28 +33,34 @@ The Xcode project and schemes still use the legacy names `Cookie-Editor (macOS)`
    ./node_modules/.bin/grunt build-safari
    ```
 
-2. Build the macOS app from the CLI:
+2. Run the CLI tests for the non-UI extension core in `interface/core/`:
+
+   ```bash
+   npm run test:core
+   ```
+
+3. Build the macOS app from the CLI:
 
    ```bash
    xcodebuild \
      -project safari/Cookie-Editor/Cookie-Editor.xcodeproj \
-     -scheme "Cookie-Editor (macOS)" \
+     -scheme "Safari Cookie Cleaner (macOS)" \
      -configuration Debug \
      build
    ```
 
-3. Build the iOS app from the CLI without depending on a simulator:
+4. Build the iOS app from the CLI without depending on a simulator:
 
    ```bash
    xcodebuild \
      -project safari/Cookie-Editor/Cookie-Editor.xcodeproj \
-     -scheme "Cookie-Editor (iOS)" \
+     -scheme "Safari Cookie Cleaner (iOS)" \
      -configuration Debug \
      -destination "generic/platform=iOS" \
      build
    ```
 
-4. Re-run `./node_modules/.bin/grunt build-safari` after every extension change you want embedded in the native app.
+5. Re-run `./node_modules/.bin/grunt build-safari` after every extension change you want embedded in the native app.
 
 ### Staging / TestFlight
 1. Bump the extension version in `package.json`.
@@ -72,7 +76,7 @@ The Xcode project and schemes still use the legacy names `Cookie-Editor (macOS)`
    ```bash
    xcodebuild \
      -project safari/Cookie-Editor/Cookie-Editor.xcodeproj \
-     -scheme "Cookie-Editor (iOS)" \
+     -scheme "Safari Cookie Cleaner (iOS)" \
      -configuration Release \
      -destination "generic/platform=iOS" \
      -archivePath build/SafariCookieCleaner-iOS.xcarchive \
@@ -84,7 +88,7 @@ The Xcode project and schemes still use the legacy names `Cookie-Editor (macOS)`
    ```bash
    xcodebuild \
      -project safari/Cookie-Editor/Cookie-Editor.xcodeproj \
-     -scheme "Cookie-Editor (macOS)" \
+     -scheme "Safari Cookie Cleaner (macOS)" \
      -configuration Release \
      -destination "generic/platform=macOS" \
      -archivePath build/SafariCookieCleaner-macOS.xcarchive \

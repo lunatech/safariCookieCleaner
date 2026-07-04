@@ -28,8 +28,8 @@ The Safari build is now a delete-only product:
 
 - `interface/popup/` contains the action popup for the current site and current subdomain.
 - `interface/options/` contains rule management for recurring cleanup.
-- `interface/lib/cookieCleaner.js` implements the cleanup scope logic.
-- `interface/lib/automationStorage.js` and `interface/lib/cleanupRules.js` store and describe scheduled rules.
+- `interface/core/` contains the non-UI extension logic that can be exercised from the CLI.
+- `tests/core/` contains the CLI tests for cleanup scope, rule storage, and scheduler helpers.
 
 The popup no longer exposes cookie editing, import/export, ads, or a DevTools workflow.
 
@@ -77,7 +77,7 @@ Manual cleanup and scheduled cleanup use different selectors on purpose:
 - **Delete this subdomain only** removes only cookies scoped to the exact hostname, leaving broader parent-domain cookies in place when possible.
 - **Scheduled site rules** clean the full saved site target, including its subdomains.
 
-The helper logic for these decisions lives in `interface/lib/urlScope.js` and `interface/lib/cookieCleaner.js`.
+The helper logic for these decisions lives in `interface/core/urlScope.js` and `interface/core/cookieCleaner.js`.
 
 ## Building the Safari version
 
@@ -94,6 +94,8 @@ Run it with:
 ```
 
 That produces `build/safari/`, which Xcode embeds into the native wrapper app.
+
+The core extension modules are intentionally separated from popup and options UI so you can run `npm run test:core` without involving Safari, Xcode, or any DOM-only UI code.
 
 ## The wrapper app
 
