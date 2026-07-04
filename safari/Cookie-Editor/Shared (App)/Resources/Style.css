@@ -2,12 +2,12 @@
   -webkit-user-select: none;
   -webkit-user-drag: none;
   cursor: default;
+  box-sizing: border-box;
 }
 
 :root {
   color-scheme: light dark;
-
-  --spacing: 10px;
+  --spacing: 12px;
 }
 
 html {
@@ -15,15 +15,12 @@ html {
 }
 
 body {
+  margin: 0;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-
-  gap: var(--spacing);
-  margin: 0 calc(var(--spacing) * 2);
-  height: 100%;
-
+  padding: calc(var(--spacing) * 2);
   font: -apple-system-short-body;
   text-align: center;
 }
@@ -40,10 +37,6 @@ body.platform-mac .platform-ios {
   display: none;
 }
 
-body.platform-ios .platform-mac {
-  display: none;
-}
-
 body:not(.state-on, .state-off) :is(.state-on, .state-off) {
   display: none;
 }
@@ -56,10 +49,35 @@ body.state-off :is(.state-on, .state-unknown) {
   display: none;
 }
 
+.shell {
+  max-width: 460px;
+  display: grid;
+  gap: var(--spacing);
+  justify-items: center;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+h1 {
+  font: -apple-system-title2;
+}
+
+.intro,
+.limitations {
+  color: color-mix(in srgb, currentColor 78%, transparent);
+}
+
 button {
   font-size: 1em;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 0;
 }
 
 .limitations {
-  font-size: 0.8em;
+  font-size: 0.9em;
+  line-height: 1.5;
 }

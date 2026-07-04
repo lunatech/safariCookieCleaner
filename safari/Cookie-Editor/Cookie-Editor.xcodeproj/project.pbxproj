@@ -21,8 +21,8 @@
 		C9D61EFE29BBF85A00399458 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EFC29BBF85A00399458 /* Main.storyboard */; };
 		C9D61F0729BBF85A00399458 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D61F0629BBF85A00399458 /* AppDelegate.swift */; };
 		C9D61F0A29BBF85A00399458 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9D61F0829BBF85A00399458 /* Main.storyboard */; };
-		C9D61F1229BBF85A00399458 /* Cookie-Editor Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9D61F1129BBF85A00399458 /* Cookie-Editor Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		C9D61F1C29BBF85A00399458 /* Cookie-Editor Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9D61F1B29BBF85A00399458 /* Cookie-Editor Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C9D61F1229BBF85A00399458 /* Safari Cookie Cleaner Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9D61F1129BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C9D61F1C29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9D61F1B29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C9D61F2229BBF85A00399458 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EE529BBF85900399458 /* Main.html */; };
 		C9D61F2329BBF85A00399458 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EE529BBF85900399458 /* Main.html */; };
 		C9D61F2429BBF85A00399458 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D61EE729BBF85900399458 /* Icon.png */; };
@@ -64,7 +64,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C9D61F1229BBF85A00399458 /* Cookie-Editor Extension.appex in Embed Foundation Extensions */,
+				C9D61F1229BBF85A00399458 /* Safari Cookie Cleaner Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,7 +75,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C9D61F1C29BBF85A00399458 /* Cookie-Editor Extension.appex in Embed Foundation Extensions */,
+				C9D61F1C29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,20 +98,20 @@
 		C9D61EEA29BBF85900399458 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C9D61EEB29BBF85A00399458 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C9D61EED29BBF85A00399458 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
-		C9D61EF229BBF85A00399458 /* Cookie-Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cookie-Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9D61EF229BBF85A00399458 /* Safari Cookie Cleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Safari Cookie Cleaner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9D61EF529BBF85A00399458 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C9D61EF729BBF85A00399458 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C9D61EFA29BBF85A00399458 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C9D61EFD29BBF85A00399458 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C9D61EFF29BBF85A00399458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9D61F0429BBF85A00399458 /* Cookie-Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cookie-Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9D61F0429BBF85A00399458 /* Safari Cookie Cleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Safari Cookie Cleaner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9D61F0629BBF85A00399458 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C9D61F0929BBF85A00399458 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C9D61F0B29BBF85A00399458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9D61F0C29BBF85A00399458 /* Cookie-Editor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Cookie-Editor.entitlements"; sourceTree = "<group>"; };
-		C9D61F1129BBF85A00399458 /* Cookie-Editor Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Cookie-Editor Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9D61F1129BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Safari Cookie Cleaner Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9D61F1629BBF85A00399458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C9D61F1B29BBF85A00399458 /* Cookie-Editor Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Cookie-Editor Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9D61F1B29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Safari Cookie Cleaner Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9D61F2029BBF85A00399458 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9D61F2129BBF85A00399458 /* Cookie-Editor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Cookie-Editor.entitlements"; sourceTree = "<group>"; };
 		C9D61F4129BBF85A00399458 /* Gruntfile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Gruntfile.js; path = ../../../Gruntfile.js; sourceTree = "<group>"; };
@@ -220,10 +220,10 @@
 		C9D61EF329BBF85A00399458 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C9D61EF229BBF85A00399458 /* Cookie-Editor.app */,
-				C9D61F0429BBF85A00399458 /* Cookie-Editor.app */,
-				C9D61F1129BBF85A00399458 /* Cookie-Editor Extension.appex */,
-				C9D61F1B29BBF85A00399458 /* Cookie-Editor Extension.appex */,
+				C9D61EF229BBF85A00399458 /* Safari Cookie Cleaner.app */,
+				C9D61F0429BBF85A00399458 /* Safari Cookie Cleaner.app */,
+				C9D61F1129BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */,
+				C9D61F1B29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -311,7 +311,7 @@
 			);
 			name = "Cookie-Editor (iOS)";
 			productName = "Cookie-Editor (iOS)";
-			productReference = C9D61EF229BBF85A00399458 /* Cookie-Editor.app */;
+			productReference = C9D61EF229BBF85A00399458 /* Safari Cookie Cleaner.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C9D61F0329BBF85A00399458 /* Cookie-Editor (macOS) */ = {
@@ -330,7 +330,7 @@
 			);
 			name = "Cookie-Editor (macOS)";
 			productName = "Cookie-Editor (macOS)";
-			productReference = C9D61F0429BBF85A00399458 /* Cookie-Editor.app */;
+			productReference = C9D61F0429BBF85A00399458 /* Safari Cookie Cleaner.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C9D61F1029BBF85A00399458 /* Cookie-Editor Extension (iOS) */ = {
@@ -348,7 +348,7 @@
 			);
 			name = "Cookie-Editor Extension (iOS)";
 			productName = "Cookie-Editor Extension (iOS)";
-			productReference = C9D61F1129BBF85A00399458 /* Cookie-Editor Extension.appex */;
+			productReference = C9D61F1129BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		C9D61F1A29BBF85A00399458 /* Cookie-Editor Extension (macOS) */ = {
@@ -366,7 +366,7 @@
 			);
 			name = "Cookie-Editor Extension (macOS)";
 			productName = "Cookie-Editor Extension (macOS)";
-			productReference = C9D61F1B29BBF85A00399458 /* Cookie-Editor Extension.appex */;
+			productReference = C9D61F1B29BBF85A00399458 /* Safari Cookie Cleaner Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -377,7 +377,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					C9D61EF129BBF85A00399458 = {
 						CreatedOnToolsVersion = 14.2;
@@ -484,7 +484,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\ngrunt build-safari\n";
+			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\n\"$PROJECT_DIR/../../node_modules/.bin/grunt\" build-safari\n";
 		};
 		C9D2F77E2ABFCF40003C6560 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -501,7 +501,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\ngrunt build-safari\n";
+			shellScript = "# Fix for machines using nvm\nif [[ -s \"$HOME/.nvm/nvm.sh\" ]]; then\n    . \"$HOME/.nvm/nvm.sh\"\nelif [[ -x \"$(command -v brew)\" && -s \"$(brew --prefix nvm)/nvm.sh\" ]]; then\n    . \"$(brew --prefix nvm)/nvm.sh\"\nfi\n\n\"$PROJECT_DIR/../../node_modules/.bin/grunt\" build-safari\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -647,6 +647,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -700,6 +701,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -709,11 +711,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = RWLNCUSDCJ;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = LGTC5X8C44;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -727,7 +729,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
-				PRODUCT_NAME = "Cookie-Editor Extension";
+				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -740,11 +742,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = RWLNCUSDCJ;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = LGTC5X8C44;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -758,7 +760,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
-				PRODUCT_NAME = "Cookie-Editor Extension";
+				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -771,15 +773,15 @@
 		C9D61F3729BBF85A00399458 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RWLNCUSDCJ;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = LGTC5X8C44;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -798,7 +800,7 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
-				PRODUCT_NAME = "Cookie-Editor";
+				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -809,15 +811,15 @@
 		C9D61F3829BBF85A00399458 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RWLNCUSDCJ;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = LGTC5X8C44;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "iOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -836,7 +838,7 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
-				PRODUCT_NAME = "Cookie-Editor";
+				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -850,27 +852,27 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Cookie-Editor.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = RWLNCUSDCJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.13.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
-				PRODUCT_NAME = "Cookie-Editor Extension";
+				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -883,27 +885,27 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "macOS (Extension)/Cookie-Editor.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = RWLNCUSDCJ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner Extension";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.13.0;
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor.Extension";
-				PRODUCT_NAME = "Cookie-Editor Extension";
+				PRODUCT_NAME = "Safari Cookie Cleaner Extension";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -914,7 +916,6 @@
 		C9D61F3E29BBF85A00399458 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Cookie-Editor.entitlements";
@@ -925,15 +926,15 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "macOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.13.0;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -942,7 +943,7 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
-				PRODUCT_NAME = "Cookie-Editor";
+				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -952,7 +953,6 @@
 		C9D61F3F29BBF85A00399458 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "macOS (App)/Cookie-Editor.entitlements";
@@ -963,15 +963,15 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "macOS (App)/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Cookie-Editor";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_CFBundleDisplayName = "Safari Cookie Cleaner";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.13.0;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -980,7 +980,7 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.cgagnier.cookie-editor";
-				PRODUCT_NAME = "Cookie-Editor";
+				PRODUCT_NAME = "Safari Cookie Cleaner";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
