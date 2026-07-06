@@ -75,7 +75,6 @@ h1,
 h2,
 .subtitle,
 .scope-target,
-.scope-note,
 .field,
 .field span {
   margin: 0;
@@ -128,8 +127,10 @@ h2 {
 }
 
 .scope-card {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   border-radius: 12px;
   border: 1px solid var(--secondary-outline-color);
   background: var(--primary-surface-color);
@@ -140,13 +141,44 @@ h2 {
   border-color: rgba(34, 111, 235, 0.3);
 }
 
+.scope-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.scope-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.scope-count {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary-text-color);
+  white-space: nowrap;
+}
+
+.scope-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.scope-actions .button {
+  padding: 6px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .scope-target {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 650;
   overflow-wrap: anywhere;
 }
 
-.scope-note,
 .rule-status,
 .field span,
 #permission-card p,
@@ -166,12 +198,6 @@ select {
   background: var(--primary-surface-color);
   color: var(--primary-text-color);
   padding: 10px 12px;
-}
-
-.button-grid {
-  display: grid;
-  gap: 6px;
-  margin-top: 10px;
 }
 
 .button,

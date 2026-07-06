@@ -4,6 +4,7 @@ import { AutomationStorage } from '../core/automationStorage.js';
 import { CleanupCadences, formatCadenceLabel } from '../core/cleanupRules.js';
 import {
   deleteCookiesForCurrentTab,
+  filterCookiesForManualCleanup,
   getCookiesForCurrentTab,
 } from '../core/cookieCleaner.js';
 import { CleanupScopes, getScopeDetails } from '../core/urlScope.js';
@@ -22,8 +23,6 @@ const state = {
   scopeDetails: null,
   hasPermission: false,
 };
-
-let hasRunStartupCookieProbe = false;
 
 const elements = {};
 
@@ -45,10 +44,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 function cacheElements() {
   elements.currentSiteHeading = document.getElementById('current-site-heading');
   elements.hostnameChip = document.getElementById('hostname-chip');
+  elements.siteCard = document.getElementById('site-card');
   elements.siteTarget = document.getElementById('site-target');
-  elements.siteNote = document.getElementById('site-note');
+  elements.siteCookieCount = document.getElementById('site-cookie-count');
+  elements.subdomainCard = document.getElementById('subdomain-card');
   elements.subdomainTarget = document.getElementById('subdomain-target');
-  elements.subdomainNote = document.getElementById('subdomain-note');
+  elements.subdomainCookieCount = document.getElementById(
+    'subdomain-cookie-count'
+  );
   elements.siteRuleStatus = document.getElementById('site-rule-status');
   elements.subdomainRuleStatus = document.getElementById(
     'subdomain-rule-status'
@@ -183,32 +186,43 @@ async function refreshPermissionsAndRules() {
       'Grant site access to clean cookies here.';
     elements.subdomainRuleStatus.textContent =
       'Grant site access to save automation for this hostname.';
+    elements.siteCookieCount.textContent = '— cookies';
+    elements.subdomainCookieCount.textContent = '— cookies';
     return;
   }
 
   await refreshRuleStatus();
-  await probeStartupCookies();
+  await refreshCookieCounts();
 }
 
-async function probeStartupCookies() {
-  if (!state.currentTab || !state.hasPermission || hasRunStartupCookieProbe) {
+function formatCookieCount(count) {
+  return `${count} cookie${count === 1 ? '' : 's'}`;
+}
+
+async function refreshCookieCounts() {
+  if (!state.currentTab || !state.hasPermission) {
     return;
   }
 
-  hasRunStartupCookieProbe = true;
-  logPopupEvent('Running startup cookie probe', {
-    currentTabUrl: state.currentTab.url,
-    cookieStoreId: state.currentTab.cookieStoreId,
-  });
   const cookies = await getCookiesForCurrentTab(
     browserDetector,
     state.currentTab,
-    'startup probe'
+    'popup cookie count'
   );
-  logPopupEvent('Startup cookie probe finished', {
+  const subdomainCookies = filterCookiesForManualCleanup(
+    cookies,
+    state.currentTab.url,
+    CleanupScopes.Subdomain
+  );
+  logPopupEvent('Cookie counts refreshed', {
     currentTabUrl: state.currentTab.url,
-    cookieCount: cookies.length,
+    siteCount: cookies.length,
+    subdomainCount: subdomainCookies.length,
   });
+  elements.siteCookieCount.textContent = formatCookieCount(cookies.length);
+  elements.subdomainCookieCount.textContent = formatCookieCount(
+    subdomainCookies.length
+  );
 }
 
 function renderScopeDetails() {
@@ -216,14 +230,26 @@ function renderScopeDetails() {
   elements.currentSiteHeading.textContent = hostname;
   elements.hostnameChip.textContent = hostname;
   elements.siteTarget.textContent = site;
-  if (hostname === site) {
-    elements.siteNote.textContent =
-      'Deletes cookies Safari sends to this site right now.';
-  } else {
-    elements.siteNote.textContent = `Deletes cookies Safari sends to ${hostname}, including parent-domain cookies from ${site}.`;
-  }
+  elements.siteCard.title =
+    hostname === site
+      ? 'Deletes cookies Safari sends to this site right now.'
+      : `Deletes cookies Safari sends to ${hostname}, including parent-domain cookies from ${site}.`;
+  elements.deleteSite.setAttribute('aria-label', `Delete cookies for ${site}`);
+  elements.autoSite.setAttribute(
+    'aria-label',
+    `Set up auto-delete for ${site}`
+  );
+
   elements.subdomainTarget.textContent = hostname;
-  elements.subdomainNote.textContent = `Deletes only cookies scoped to ${hostname}. Broader ${site} cookies stay in place when possible.`;
+  elements.subdomainCard.title = `Deletes only cookies scoped to ${hostname}. Broader ${site} cookies stay in place when possible.`;
+  elements.deleteSubdomain.setAttribute(
+    'aria-label',
+    `Delete cookies for ${hostname}`
+  );
+  elements.autoSubdomain.setAttribute(
+    'aria-label',
+    `Set up auto-delete for ${hostname}`
+  );
 }
 
 async function refreshRuleStatus() {
@@ -297,6 +323,7 @@ async function runManualCleanup(scope) {
       'success'
     );
   });
+  await refreshCookieCounts();
 }
 
 async function saveRule(scope) {
@@ -371,8 +398,10 @@ function showUnsupportedState(message) {
   elements.hostnameChip.textContent = 'Unavailable';
   elements.siteTarget.textContent = '—';
   elements.subdomainTarget.textContent = '—';
-  elements.siteNote.textContent = message;
-  elements.subdomainNote.textContent = message;
+  elements.siteCard.title = message;
+  elements.subdomainCard.title = message;
+  elements.siteCookieCount.textContent = '— cookies';
+  elements.subdomainCookieCount.textContent = '— cookies';
   elements.siteRuleStatus.textContent = 'Open a website to continue.';
   elements.subdomainRuleStatus.textContent = 'Open a website to continue.';
   elements.permissionCard.classList.add('hidden');
