@@ -149,7 +149,6 @@ This snippet reads every storage mechanism accessible from JavaScript and report
   Object.entries(stores.cookies || {}).forEach(([k, v]) => record('cookie', k, v))
   Object.entries(stores.localStorage || {}).forEach(([k, v]) => record('localStorage', k, v))
   Object.entries(stores.sessionStorage || {}).forEach(([k, v]) => record('sessionStorage', k, v))
-  Object.entries(stores.cookieStore || {}).forEach(([k, v]) => record('cookieStore', k, v))
   if (stores.windowName) record('window', 'name', stores.windowName)
 
   const duplicates = Object.entries(seen).filter(([, locs]) => locs.length > 1)
