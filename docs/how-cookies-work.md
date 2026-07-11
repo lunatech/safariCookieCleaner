@@ -81,12 +81,14 @@ Object.fromEntries(
 
 ### Reading cookies via the Cookie Store API
 
-Newer browsers expose `cookieStore`, an async API that returns structured objects and also sees `HttpOnly` cookies in a service worker context:
+Newer browsers expose `cookieStore`, an async API that returns structured objects and also sees `HttpOnly` cookies in a service worker context. Safari's console does not support top-level `await`, so wrap the call in an async IIFE:
 
 ```js
 // List all cookies visible to the current page
-const cookies = await cookieStore.getAll()
-cookies.forEach(c => console.log(c.name, c.value, c.domain, c.expires))
+;(async () => {
+  const cookies = await cookieStore.getAll()
+  cookies.forEach(c => console.log(c.name, c.value, c.domain, c.expires))
+})()
 ```
 
 `cookieStore` is available in Safari 16.4+. It still cannot read `HttpOnly` cookies from a page context; those are deliberately hidden from JavaScript.
