@@ -87,6 +87,96 @@ Safari's Intelligent Tracking Prevention (ITP) limits several evercookie vectors
 
 ITP does not protect against first-party evercookies, where the site itself (not a third-party script) is doing the respawning.
 
+## Inspecting from the browser console
+
+This snippet reads every storage mechanism accessible from JavaScript and reports what it finds. Paste it into Safari's Web Inspector console on any page you want to inspect.
+
+```js
+;(async () => {
+  const stores = {}
+
+  // Cookies (non-HttpOnly only — HttpOnly cookies are not visible to JS)
+  stores.cookies = Object.fromEntries(
+    document.cookie.split('; ').filter(Boolean).map(p => {
+      const i = p.indexOf('=')
+      return [p.slice(0, i), p.slice(i + 1)]
+    })
+  )
+
+  // localStorage
+  stores.localStorage = {}
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i)
+    stores.localStorage[k] = localStorage.getItem(k)
+  }
+
+  // sessionStorage
+  stores.sessionStorage = {}
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const k = sessionStorage.key(i)
+    stores.sessionStorage[k] = sessionStorage.getItem(k)
+  }
+
+  // window.name — persists across navigations in the same tab
+  if (window.name) stores.windowName = window.name
+
+  // cookieStore API (Safari 16.4+) — same visibility as document.cookie from page context
+  if (typeof cookieStore !== 'undefined') {
+    try {
+      const all = await cookieStore.getAll()
+      stores.cookieStore = Object.fromEntries(all.map(c => [c.name, c.value]))
+    } catch (e) {
+      stores.cookieStore = '(unavailable: ' + e.message + ')'
+    }
+  }
+
+  // IndexedDB — list database names; reading contents requires knowing the schema
+  if (typeof indexedDB !== 'undefined' && typeof indexedDB.databases === 'function') {
+    try {
+      stores.indexedDB = (await indexedDB.databases()).map(d => d.name)
+    } catch (e) {
+      stores.indexedDB = '(unavailable: ' + e.message + ')'
+    }
+  }
+
+  // Cross-store duplicate detection: same value in multiple stores = respawning signal
+  const seen = {}
+  const record = (storeName, key, val) => {
+    if (typeof val !== 'string' || val.length < 8) return // skip trivial values
+    ;(seen[val] = seen[val] || []).push(storeName + '.' + key)
+  }
+
+  Object.entries(stores.cookies || {}).forEach(([k, v]) => record('cookie', k, v))
+  Object.entries(stores.localStorage || {}).forEach(([k, v]) => record('localStorage', k, v))
+  Object.entries(stores.sessionStorage || {}).forEach(([k, v]) => record('sessionStorage', k, v))
+  Object.entries(stores.cookieStore || {}).forEach(([k, v]) => record('cookieStore', k, v))
+  if (stores.windowName) record('window', 'name', stores.windowName)
+
+  const duplicates = Object.entries(seen).filter(([, locs]) => locs.length > 1)
+
+  console.group('Evercookie scan — ' + location.hostname)
+  console.log('All storage:', stores)
+
+  if (duplicates.length) {
+    console.warn('Same value found in multiple stores — possible respawning:')
+    duplicates.forEach(([val, locs]) => {
+      console.warn(' value:', val.length > 60 ? val.slice(0, 60) + '…' : val)
+      console.warn(' found in:', locs.join(', '))
+    })
+  } else {
+    console.log('No identical values found across multiple storage mechanisms.')
+  }
+
+  if (stores.indexedDB?.length) {
+    console.log('IndexedDB databases present (contents not read automatically):', stores.indexedDB)
+  }
+
+  console.groupEnd()
+})()
+```
+
+The snippet cannot read `HttpOnly` cookies, ETag caches, the favicon cache, or the browser's HTTP cache — those require the Storage panel or network-level inspection. If the site uses any of those as backup stores they will not appear here, but the most common JavaScript-accessible vectors are covered.
+
 ## Sources
 
 - Samy Kamkar, [evercookie project](https://github.com/samyk/evercookie) (2010)
