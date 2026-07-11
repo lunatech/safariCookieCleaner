@@ -37,7 +37,9 @@ This app is not published on the App Store, TestFlight, or anywhere else. There 
 - [Development](development.html) — build, run, and debug the extension locally
 - [Publishing](publishing.html) — TestFlight and App Store release steps
 
-More pages on cookies themselves — how sites use them and how they get abused for tracking — are coming here next.
+## Cookies
+
+- [How cookies work](how-cookies-work.html) — the Set-Cookie header, attributes, scope, and how to inspect the live cookie jar from the browser console
 
 ## Source and issues
 
