@@ -24,10 +24,7 @@ Scheduled cleanup works best on macOS. On iPhone and iPad, Safari may delay back
 This app is not published on the App Store, TestFlight, or anywhere else. There is no download link. To use it, you build it yourself from source with your own Apple Developer account and signing certificate — see [Development](docs/development.md).
 
 ## Documentation
-- [Architecture](docs/architecture.md) — how the extension and the native wrapper app fit together
-- [Development](docs/development.md) — build, run, and debug the extension locally
-- [Publishing](docs/publishing.md) — TestFlight and App Store release steps
-- [Project site](https://lunatech.github.io/safariCookieCleaner/) — the same docs, plus upcoming pages on how cookies are used and abused
+- [Documentation](https://lunatech.github.io/safariCookieCleaner/)
 
 ## Issues
 To report a bug or suggest a change, [open an issue](https://github.com/lunatech/safariCookieCleaner/issues).
