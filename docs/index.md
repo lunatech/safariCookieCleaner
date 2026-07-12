@@ -40,7 +40,7 @@ This app is not published on the App Store, TestFlight, or anywhere else. There 
 ## Cookies
 
 - [How cookies work](how-cookies-work.html) — the Set-Cookie header, attributes, scope, and how to inspect the live cookie jar from the browser console
-- [Evercookie — zombie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
+- [Evercookie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
 
 ## Source and issues
 

@@ -15,6 +15,7 @@ export const StorageMechanisms = Object.freeze({
   WindowName: 'windowName',
   CookieStore: 'cookieStore',
   IndexedDB: 'indexedDB',
+  CacheAPI: 'cacheAPI',
 });
 
 /**
@@ -74,6 +75,14 @@ export async function collectPageStorage() {
       );
     } catch (error) {
       stores.indexedDbError = error.message;
+    }
+  }
+
+  if (typeof caches !== 'undefined') {
+    try {
+      stores.cacheNames = await caches.keys();
+    } catch (error) {
+      stores.cacheStorageError = error.message;
     }
   }
 
@@ -148,6 +157,9 @@ export function listPopulatedMechanisms(stores) {
   }
   if ((stores.indexedDbDatabases || []).length) {
     populated.push(StorageMechanisms.IndexedDB);
+  }
+  if ((stores.cacheNames || []).length) {
+    populated.push(StorageMechanisms.CacheAPI);
   }
   return populated;
 }

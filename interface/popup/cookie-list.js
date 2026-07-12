@@ -51,6 +51,7 @@ const MECHANISM_LABELS = {
   windowName: 'Window name',
   cookieStore: 'Cookie store',
   indexedDB: 'IndexedDB',
+  cacheAPI: 'Cache API',
 };
 
 const elements = {};
@@ -345,7 +346,7 @@ function renderEvercookieCard() {
 
   if (!state.evercookieScan.supported) {
     elements.evercookieSummary.textContent =
-      'Zombie-cookie scanning is not available in this browser.';
+      'Evercookie scanning is not available in this browser.';
     return;
   }
 

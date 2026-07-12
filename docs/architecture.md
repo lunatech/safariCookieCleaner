@@ -82,18 +82,18 @@ Manual cleanup and scheduled cleanup use different selectors on purpose:
 
 The helper logic for these decisions lives in `interface/core/urlScope.js` and `interface/core/cookieCleaner.js`.
 
-## Evercookie / zombie-cookie detection
+## Evercookie detection
 
-Deleting cookies alone doesn't stop a site from re-deriving the same tracking identifier out of `localStorage`, `IndexedDB`, or `window.name` — see [Evercookie — zombie tracking](evercookie.md) for how that respawning works. `interface/core/evercookieScanner.js` is the extension's detector for that pattern:
+Deleting cookies alone doesn't stop a site from re-deriving the same tracking identifier out of `localStorage`, `IndexedDB`, the Cache API, or `window.name` — see [Evercookie tracking](evercookie.md) for how that respawning works. `interface/core/evercookieScanner.js` is the extension's detector for that pattern:
 
-- `collectPageStorage()` is a self-contained function injected into the active tab via `chrome.scripting.executeScript` (the `scripting` permission above). It reads cookies, `localStorage`, `sessionStorage`, `window.name`, the `cookieStore` API, and `IndexedDB` database names from the page's own context — the same visibility a page's own script has, nothing more.
+- `collectPageStorage()` is a self-contained function injected into the active tab via `chrome.scripting.executeScript` (the `scripting` permission above). It reads cookies, `localStorage`, `sessionStorage`, `window.name`, the `cookieStore` API, IndexedDB database names, and Cache API cache names from the page's own context — the same visibility a page's own script has, nothing more. IndexedDB and Cache API contents are not read because doing so safely requires knowing each site's schemas and response formats.
 - `detectRespawnSignals()` cross-references the values collected from every store and flags any identifier (8+ characters) that shows up in more than one place. That duplication across independent stores is the respawn signature evercookie-style tracking leaves behind.
 - `listPopulatedMechanisms()` summarizes which storage mechanisms hold any data at all, independent of whether a duplicate was found.
 - `scanTabForEvercookies()` ties the above together for a given tab and degrades to an empty result if the `scripting` API isn't available.
 
 Like the cookie cleanup logic, the duplicate-detection and summarization functions are pure and covered by `tests/core/evercookieScanner.test.mjs`, runnable via `npm run test:core` without Safari or a real DOM. The page-injected `collectPageStorage()` itself can only be exercised by loading the built extension in Safari.
 
-The popup runs a scan each time it opens for a site the user has already granted host permission to (the same lifecycle as the cookie counts), and shows a "Zombie cookie scan" card: badges for which storage mechanisms hold data, and a warning banner when a respawn signal is found. It only ever displays which mechanisms are populated and whether a duplicate was detected — never the raw stored values. Scanning is skipped, with a card explaining why, if the `scripting` API isn't available in that Safari runtime.
+The popup runs a scan each time it opens for a site the user has already granted host permission to (the same lifecycle as the cookie counts), and shows an "Evercookie scan" card: badges for which storage mechanisms hold data, and a warning banner when a respawn signal is found. It only ever displays which mechanisms are populated and whether a duplicate was detected — never the raw stored values. Scanning is skipped, with a card explaining why, if the `scripting` API isn't available in that Safari runtime.
 
 ## Building the Safari version
 

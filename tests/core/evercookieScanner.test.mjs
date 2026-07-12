@@ -64,12 +64,14 @@ test('lists only mechanisms that actually hold data', () => {
     localStorage: {},
     windowName: 'tracking-id',
     indexedDbDatabases: ['trackerDb'],
+    cacheNames: ['evercookie-cache'],
   };
 
   assert.deepEqual(listPopulatedMechanisms(stores), [
     StorageMechanisms.Cookies,
     StorageMechanisms.WindowName,
     StorageMechanisms.IndexedDB,
+    StorageMechanisms.CacheAPI,
   ]);
 });
 

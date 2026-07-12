@@ -1,16 +1,15 @@
 ---
-title: Evercookie — Zombie Tracking
+title: Evercookie Tracking
 ---
 
 [Docs home](index.md) · [How cookies work](how-cookies-work.md)
 
-# Evercookie — zombie tracking
+# Evercookie tracking
 
 A regular cookie can be deleted. An evercookie comes back.
 
 Evercookie is an open-source JavaScript library created by security researcher [Samy Kamkar](https://samy.pl/) in 2010 to demonstrate how a tracking identifier can survive deletion by storing copies of itself across every storage mechanism a browser exposes. Delete it from one place and it respawns from another.
 
-The technique is also called a **zombie cookie** or **supercookie**.
 
 ## How it works
 
@@ -21,6 +20,7 @@ When you visit a site using evercookie, it writes the same unique identifier to 
 | HTTP cookies | The standard target of "clear cookies" |
 | `localStorage` / `sessionStorage` | HTML5 key-value stores, separate from cookies |
 | `IndexedDB` | Structured browser database |
+| `Cache API` | Script-managed request/response caches, commonly used by service workers |
 | Flash Local Shared Objects (LSOs) | Adobe Flash cookies, stored outside browser profile |
 | `ETags` | HTTP caching headers repurposed as identifiers |
 | Web cache | Resources cached with a unique URL encoding an ID |
@@ -35,12 +35,12 @@ If you clear cookies but leave localStorage alone, the next visit reads the ID f
 
 ## Why deleting cookies is not enough
 
-This is the exact problem evercookie illustrates. Safari Cookie Cleaner removes cookies, which eliminates the most common tracking store. But if a site has written an evercookie, the ID can survive in localStorage, IndexedDB, ETags, or cached resources and respawn into a fresh cookie on the next visit.
+This is the exact problem evercookie illustrates. Safari Cookie Cleaner removes cookies, which eliminates the most common tracking store. But if a site has written an evercookie, the ID can survive in localStorage, IndexedDB, the Cache API, ETags, or cached resources and respawn into a fresh cookie on the next visit.
 
 To fully clear an evercookie you need to:
 
 1. Clear cookies
-2. Clear site data (localStorage, sessionStorage, IndexedDB, cache)
+2. Clear site data (localStorage, sessionStorage, IndexedDB, Cache API storage)
 3. Clear the browser cache
 4. Remove any Flash or Silverlight plugins (both are now obsolete and unsupported in Safari)
 
@@ -139,6 +139,15 @@ This snippet reads every storage mechanism accessible from JavaScript and report
     }
   }
 
+  // Cache API — list cache names; reading response bodies can be expensive
+  if (typeof caches !== 'undefined') {
+    try {
+      stores.cacheAPI = await caches.keys()
+    } catch (e) {
+      stores.cacheAPI = '(unavailable: ' + e.message + ')'
+    }
+  }
+
   // Cross-store duplicate detection: same value in multiple stores = respawning signal
   const seen = {}
   const record = (storeName, key, val) => {
@@ -168,6 +177,10 @@ This snippet reads every storage mechanism accessible from JavaScript and report
 
   if (stores.indexedDB?.length) {
     console.log('IndexedDB databases present (contents not read automatically):', stores.indexedDB)
+  }
+
+  if (stores.cacheAPI?.length) {
+    console.log('Cache API caches present (contents not read automatically):', stores.cacheAPI)
   }
 
   console.groupEnd()
