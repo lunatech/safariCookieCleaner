@@ -25,6 +25,7 @@
 	"permissions": [
 		"alarms",
 		"cookies",
+		"scripting",
 		"tabs",
 		"storage"
 	],
