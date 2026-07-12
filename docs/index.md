@@ -41,6 +41,7 @@ This app is not published on the App Store, TestFlight, or anywhere else. There 
 
 - [How cookies work](how-cookies-work.html) — the Set-Cookie header, attributes, scope, and how to inspect the live cookie jar from the browser console
 - [Evercookie — zombie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
+- [World famous cookies](world-famous-cookies.html) — recognizable cookies from Google, Cloudflare, and Yahoo, what they do, and what deletion changes
 
 ## Source and issues
 
