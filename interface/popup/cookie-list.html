@@ -21,7 +21,7 @@
             </button>
             <div class="row-content" id="site-row-content">
               <div class="row-main">
-                <p class="row-label">Site</p>
+                <p class="row-label">Site total</p>
                 <p class="row-sub" id="site-sub">— cookies</p>
               </div>
               <select class="picker" id="site-picker">
@@ -75,16 +75,15 @@
       </section>
 
       <section class="card hidden" id="evercookie-card">
-        <h2>Zombie cookie check</h2>
+        <h2>Evercookie protection</h2>
         <p class="evercookie-summary" id="evercookie-summary">Checking…</p>
         <p class="evercookie-warning hidden" id="evercookie-warning" role="status"></p>
-        <label class="evercookie-clear-toggle" for="evercookie-clear-toggle">
-          <input type="checkbox" id="evercookie-clear-toggle" />
-          <span>
-            Also clear extra data saved by this page
-            <small>May sign you out or reset saved settings here.</small>
-          </span>
-        </label>
+        <button class="button evercookie-clear" id="evercookie-clear" type="button">
+          Clear cookies + hidden data
+        </button>
+        <small class="evercookie-clear-note">
+          This may sign you out or reset preferences for this site.
+        </small>
       </section>
 
       <button class="link-button" id="manage-automation" type="button">

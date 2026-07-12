@@ -20,6 +20,7 @@ body {
   width: 320px;
   max-height: 500px;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--primary-surface-color);
   color: var(--primary-text-color);
 }
@@ -38,6 +39,7 @@ button {
   display: grid;
   gap: 8px;
   padding: 10px;
+  min-width: 0;
 }
 
 .card {
@@ -45,6 +47,7 @@ button {
   border-radius: 10px;
   background: var(--primary-surface-color);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  min-width: 0;
 }
 
 .panel {
@@ -304,29 +307,30 @@ button {
   line-height: 1.4;
 }
 
-.evercookie-clear-toggle {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.75rem;
+.evercookie-clear {
+  width: 100%;
+  margin-top: 2px;
+  background: var(--primary-danger-color);
+  color: white;
   cursor: pointer;
+  min-width: 0;
+  white-space: normal;
 }
 
-.evercookie-clear-toggle input {
-  margin-top: 2px;
-  flex-shrink: 0;
+.evercookie-clear:hover:not(:disabled) {
+  filter: brightness(0.92);
 }
 
-.evercookie-clear-toggle small {
-  display: block;
-  margin-top: 2px;
-  font-size: 0.6875rem;
-  color: var(--secondary-text-color);
-}
-
-.evercookie-clear-toggle:has(input:disabled) {
+.evercookie-clear:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+.evercookie-clear-note {
+  display: block;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--secondary-text-color);
 }
 
 .button {

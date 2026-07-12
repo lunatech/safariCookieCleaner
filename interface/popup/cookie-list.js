@@ -87,9 +87,7 @@ function cacheElements() {
   elements.evercookieCard = document.getElementById('evercookie-card');
   elements.evercookieSummary = document.getElementById('evercookie-summary');
   elements.evercookieWarning = document.getElementById('evercookie-warning');
-  elements.evercookieClearToggle = document.getElementById(
-    'evercookie-clear-toggle'
-  );
+  elements.evercookieClear = document.getElementById('evercookie-clear');
   elements.manageAutomation = document.getElementById('manage-automation');
   elements.footer = document.getElementById('status-footer');
 }
@@ -141,6 +139,13 @@ function bindEvents() {
       currentTabUrl: state.currentTab?.url,
     });
     await runManualCleanup(CleanupScopes.Subdomain);
+  });
+
+  elements.evercookieClear.addEventListener('click', async () => {
+    logPopupEvent('Clear evercookie data clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
+    await runManualCleanup(CleanupScopes.Site, true);
   });
 
   elements.sitePicker.addEventListener('change', async () => {
@@ -340,37 +345,34 @@ function renderEvercookieCard() {
 
   if (!state.evercookieScan.supported) {
     elements.evercookieSummary.textContent =
-      "Can't check for zombie cookies in this browser yet.";
-    setEvercookieClearToggleAvailable(false);
+      "This browser can't check for hidden site data yet.";
+    setEvercookieClearAvailable(false);
     return;
   }
 
   if (state.evercookieScan.failed) {
     elements.evercookieSummary.textContent =
-      'Could not check this page for zombie cookies.';
-    setEvercookieClearToggleAvailable(false);
+      'Could not check hidden site data on this page.';
+    setEvercookieClearAvailable(false);
     return;
   }
 
-  setEvercookieClearToggleAvailable(true);
+  setEvercookieClearAvailable(true);
 
-  const zombieCookieCount = state.evercookieScan.respawnSignals.length;
-  elements.evercookieSummary.textContent = zombieCookieCount
-    ? `Found ${zombieCookieCount} zombie cookie${zombieCookieCount === 1 ? '' : 's'} on this page.`
-    : 'No zombie cookies found on this page.';
+  const duplicateIdentifierCount = state.evercookieScan.respawnSignals.length;
+  elements.evercookieSummary.textContent = duplicateIdentifierCount
+    ? `${duplicateIdentifierCount} tracking identifier${duplicateIdentifierCount === 1 ? '' : 's'} found in more than one storage location.`
+    : 'No duplicated tracking identifiers found.';
 
-  if (zombieCookieCount) {
+  if (duplicateIdentifierCount) {
     elements.evercookieWarning.textContent =
-      'A zombie cookie hides copies of a tracking code so it can come back after you delete your cookies. Turn on the option below to remove it too.';
+      'These are not additional cookies. They are copies stored elsewhere that may recreate a deleted cookie.';
     elements.evercookieWarning.classList.remove('hidden');
   }
 }
 
-function setEvercookieClearToggleAvailable(available) {
-  elements.evercookieClearToggle.disabled = !available;
-  if (!available) {
-    elements.evercookieClearToggle.checked = false;
-  }
+function setEvercookieClearAvailable(available) {
+  elements.evercookieClear.disabled = !available;
 }
 
 function formatRepeatLabel(cadenceId) {
@@ -469,12 +471,12 @@ async function handlePickerChange(scope, picker) {
   await refreshFooter();
 }
 
-async function runManualCleanup(scope) {
+async function runManualCleanup(scope, clearPageStorage = false) {
   if (!state.currentTab || !state.hasPermission) {
     return;
   }
 
-  const alsoClearStorage = elements.evercookieClearToggle.checked;
+  const alsoClearStorage = clearPageStorage;
 
   logPopupEvent('Manual cleanup starting', {
     scope: scope,
@@ -482,8 +484,9 @@ async function runManualCleanup(scope) {
     hasPermission: state.hasPermission,
     alsoClearStorage: alsoClearStorage,
   });
-  const buttons =
-    scope === CleanupScopes.Site
+  const buttons = clearPageStorage
+    ? [elements.evercookieClear]
+    : scope === CleanupScopes.Site
       ? [elements.siteClear, elements.siteTapClear]
       : [elements.subdomainClear, elements.subdomainTapClear];
   await withBusy(buttons, async () => {
