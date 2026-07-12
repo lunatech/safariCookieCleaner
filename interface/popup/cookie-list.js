@@ -12,6 +12,7 @@ import {
   filterCookiesForManualCleanup,
   getCookiesForCurrentTab,
 } from '../core/cookieCleaner.js';
+import { scanTabForEvercookies } from '../core/evercookieScanner.js';
 import { CleanupScopes, getScopeDetails } from '../core/urlScope.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
@@ -40,6 +41,16 @@ const state = {
   subdomainRule: null,
   siteCookieCount: null,
   subdomainCookieCount: null,
+  evercookieScan: null,
+};
+
+const MECHANISM_LABELS = {
+  cookies: 'Cookies',
+  localStorage: 'Local storage',
+  sessionStorage: 'Session storage',
+  windowName: 'Window name',
+  cookieStore: 'Cookie store',
+  indexedDB: 'IndexedDB',
 };
 
 const elements = {};
@@ -79,6 +90,10 @@ function cacheElements() {
   );
   elements.permissionCard = document.getElementById('permission-card');
   elements.requestPermission = document.getElementById('request-permission');
+  elements.evercookieCard = document.getElementById('evercookie-card');
+  elements.evercookieSummary = document.getElementById('evercookie-summary');
+  elements.evercookieBadges = document.getElementById('evercookie-badges');
+  elements.evercookieWarning = document.getElementById('evercookie-warning');
   elements.manageAutomation = document.getElementById('manage-automation');
   elements.footer = document.getElementById('status-footer');
 }
@@ -228,14 +243,18 @@ async function refreshPermissionsAndRules() {
     state.subdomainRule = null;
     state.siteCookieCount = null;
     state.subdomainCookieCount = null;
+    state.evercookieScan = null;
     renderRows();
+    renderEvercookieCard();
     elements.footer.textContent = 'Grant site access to manage cookies here.';
     return;
   }
 
   await refreshRules();
   await refreshCookieCounts();
+  await refreshEvercookieScan();
   renderRows();
+  renderEvercookieCard();
   await refreshFooter();
 }
 
@@ -281,6 +300,80 @@ async function refreshCookieCounts() {
 
 function formatCookieCount(count) {
   return `${count} cookie${count === 1 ? '' : 's'}`;
+}
+
+async function refreshEvercookieScan() {
+  if (!state.currentTab || !state.hasPermission) {
+    return;
+  }
+
+  if (!browserDetector.getApi().scripting?.executeScript) {
+    logPopupEvent('Evercookie scan skipped', {
+      reason: 'scripting API unavailable',
+    });
+    state.evercookieScan = { supported: false };
+    return;
+  }
+
+  try {
+    const scan = await scanTabForEvercookies(browserDetector, state.currentTab);
+    logPopupEvent('Evercookie scan completed', {
+      currentTabUrl: state.currentTab.url,
+      populatedMechanisms: scan.populatedMechanisms,
+      respawnSignalCount: scan.respawnSignals.length,
+    });
+    state.evercookieScan = { supported: true, ...scan };
+  } catch (error) {
+    console.error('Evercookie scan failed', error);
+    logPopupEvent('Evercookie scan failed', {
+      currentTabUrl: state.currentTab.url,
+      error: error.message || String(error),
+    });
+    state.evercookieScan = { supported: true, failed: true };
+  }
+}
+
+function renderEvercookieCard() {
+  if (!state.hasPermission || !state.evercookieScan) {
+    elements.evercookieCard.classList.add('hidden');
+    return;
+  }
+
+  elements.evercookieCard.classList.remove('hidden');
+  elements.evercookieBadges.replaceChildren();
+  elements.evercookieWarning.classList.add('hidden');
+
+  if (!state.evercookieScan.supported) {
+    elements.evercookieSummary.textContent =
+      'Zombie-cookie scanning is not available in this browser.';
+    return;
+  }
+
+  if (state.evercookieScan.failed) {
+    elements.evercookieSummary.textContent = 'Could not scan this page.';
+    return;
+  }
+
+  const { populatedMechanisms, respawnSignals } = state.evercookieScan;
+
+  elements.evercookieSummary.textContent = populatedMechanisms.length
+    ? `Found data in ${populatedMechanisms.length} storage location${populatedMechanisms.length === 1 ? '' : 's'}.`
+    : 'No extra browser storage detected on this page.';
+
+  elements.evercookieBadges.replaceChildren(
+    ...populatedMechanisms.map(mechanism => {
+      const badge = document.createElement('li');
+      badge.className = 'evercookie-badge';
+      badge.textContent = MECHANISM_LABELS[mechanism] || mechanism;
+      return badge;
+    })
+  );
+
+  if (respawnSignals.length) {
+    elements.evercookieWarning.textContent =
+      'Same identifier found in multiple storage locations — this site may respawn deleted cookies.';
+    elements.evercookieWarning.classList.remove('hidden');
+  }
 }
 
 function formatRepeatLabel(cadenceId) {
@@ -632,7 +725,9 @@ function showUnsupportedState(message) {
   state.subdomainCookieCount = null;
   state.siteRule = null;
   state.subdomainRule = null;
+  state.evercookieScan = null;
   renderRows();
+  renderEvercookieCard();
   elements.footer.textContent = message;
   elements.permissionCard.classList.add('hidden');
   setRowsDisabled(true);

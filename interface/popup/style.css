@@ -274,6 +274,53 @@ button {
   color: var(--secondary-text-color);
 }
 
+#evercookie-card {
+  padding: 12px 14px;
+  gap: 8px;
+}
+
+#evercookie-card:not(.hidden) {
+  display: grid;
+}
+
+#evercookie-card h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.evercookie-summary {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--secondary-text-color);
+}
+
+.evercookie-badges {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.evercookie-badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--secondary-surface-color);
+  color: var(--primary-text-color);
+  font-size: 0.6875rem;
+}
+
+.evercookie-warning {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--notice-danger-surface-color, rgba(207, 0, 15, 0.1));
+  color: var(--primary-danger-color);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
 .button {
   border: 0;
   border-radius: 8px;

@@ -93,7 +93,7 @@ Deleting cookies alone doesn't stop a site from re-deriving the same tracking id
 
 Like the cookie cleanup logic, the duplicate-detection and summarization functions are pure and covered by `tests/core/evercookieScanner.test.mjs`, runnable via `npm run test:core` without Safari or a real DOM. The page-injected `collectPageStorage()` itself can only be exercised by loading the built extension in Safari.
 
-As of this module landing, detection runs on request from `interface/core/`, and only against tabs the user has already granted host permission to — it is not yet surfaced in the popup or options UI.
+The popup runs a scan each time it opens for a site the user has already granted host permission to (the same lifecycle as the cookie counts), and shows a "Zombie cookie scan" card: badges for which storage mechanisms hold data, and a warning banner when a respawn signal is found. It only ever displays which mechanisms are populated and whether a duplicate was detected — never the raw stored values. Scanning is skipped, with a card explaining why, if the `scripting` API isn't available in that Safari runtime.
 
 ## Building the Safari version
 
