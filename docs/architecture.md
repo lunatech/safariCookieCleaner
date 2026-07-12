@@ -31,7 +31,7 @@ The Safari build is now a delete-only product:
 - `interface/popup/` contains the action popup for the current site and current subdomain.
 - `interface/options/` contains rule management for recurring cleanup.
 - `interface/core/` contains the non-UI extension logic that can be exercised from the CLI.
-- `tests/core/` contains the CLI tests for cleanup scope, rule storage, and scheduler helpers.
+- `tests/core/` contains the CLI tests for cleanup scope, rule storage, scheduler helpers, and evercookie detection.
 
 The popup no longer exposes cookie editing, import/export, ads, or a DevTools workflow.
 
@@ -43,6 +43,7 @@ The popup no longer exposes cookie editing, import/export, ads, or a DevTools wo
 - `tabs` for the active-page context shown in the popup
 - `storage` for saved rules and theme preference
 - `alarms` for recurring cleanup on supported Safari runtimes
+- `scripting` for injecting the evercookie storage scan into the active tab
 - optional host permissions for `<all_urls>` so the user can grant site access from the popup
 
 The action popup is `interface/popup/cookie-list.html`, and the management page is `interface/options/options.html`.
@@ -80,6 +81,19 @@ Manual cleanup and scheduled cleanup use different selectors on purpose:
 - **Scheduled site rules** clean the full saved site target, including its subdomains.
 
 The helper logic for these decisions lives in `interface/core/urlScope.js` and `interface/core/cookieCleaner.js`.
+
+## Evercookie / zombie-cookie detection
+
+Deleting cookies alone doesn't stop a site from re-deriving the same tracking identifier out of `localStorage`, `IndexedDB`, or `window.name` — see [Evercookie — zombie tracking](evercookie.md) for how that respawning works. `interface/core/evercookieScanner.js` is the extension's detector for that pattern:
+
+- `collectPageStorage()` is a self-contained function injected into the active tab via `chrome.scripting.executeScript` (the `scripting` permission above). It reads cookies, `localStorage`, `sessionStorage`, `window.name`, the `cookieStore` API, and `IndexedDB` database names from the page's own context — the same visibility a page's own script has, nothing more.
+- `detectRespawnSignals()` cross-references the values collected from every store and flags any identifier (8+ characters) that shows up in more than one place. That duplication across independent stores is the respawn signature evercookie-style tracking leaves behind.
+- `listPopulatedMechanisms()` summarizes which storage mechanisms hold any data at all, independent of whether a duplicate was found.
+- `scanTabForEvercookies()` ties the above together for a given tab and degrades to an empty result if the `scripting` API isn't available.
+
+Like the cookie cleanup logic, the duplicate-detection and summarization functions are pure and covered by `tests/core/evercookieScanner.test.mjs`, runnable via `npm run test:core` without Safari or a real DOM. The page-injected `collectPageStorage()` itself can only be exercised by loading the built extension in Safari.
+
+As of this module landing, detection runs on request from `interface/core/`, and only against tabs the user has already granted host permission to — it is not yet surfaced in the popup or options UI.
 
 ## Building the Safari version
 
