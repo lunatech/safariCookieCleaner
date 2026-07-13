@@ -1,8 +1,13 @@
-[Docs home](index.md)
+[Docs home]({% link index.md %}) · [Contributing]({% link contributing.md %}) · [Architecture]({% link architecture.md %}) · [Publishing]({% link publishing.md %})
 
 # Development
 
-This covers building the extension, running it locally in Safari, and reading its debug logs. For how the pieces fit together, see [Architecture](architecture.md). For shipping a build, see [Publishing](publishing.md).
+This covers building the extension, running it locally in Safari, and reading its debug logs. Start with [Contributing]({% link contributing.md %}) if you want the project scope and the best entry points for a first change. For how the pieces fit together, see [Architecture]({% link architecture.md %}). For shipping a build, see [Publishing]({% link publishing.md %}).
+
+## On this page
+
+* TOC
+{:toc}
 
 ## Local development
 

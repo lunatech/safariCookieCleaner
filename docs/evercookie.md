@@ -1,14 +1,19 @@
 ---
-title: Evercookie Tracking
+title: The Web Cookie Book: Evercookie tracking
 ---
 
-[Docs home](index.md) · [How cookies work](how-cookies-work.md) · [Respawning cookies](respawning-cookies.md)
+[Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %}) · [How cookies work]({% link how-cookies-work.md %}) · [Respawning cookies]({% link respawning-cookies.md %})
 
 # Evercookie tracking
 
 A regular cookie can be deleted. An evercookie comes back.
 
 Evercookie is an open-source JavaScript library created by security researcher [Samy Kamkar](https://samy.pl/) in 2010 to demonstrate how a tracking identifier can survive deletion by storing copies of itself across every storage mechanism a browser exposes. Delete it from one place and it respawns from another.
+
+## On this page
+
+* TOC
+{:toc}
 
 
 ## How it works
@@ -37,7 +42,7 @@ If you clear cookies but leave localStorage alone, the next visit reads the ID f
 
 This is the exact problem evercookie illustrates. Safari Cookie Cleaner removes cookies, which eliminates the most common tracking store. But if a site has written an evercookie, the ID can survive in localStorage, IndexedDB, the Cache API, ETags, or cached resources and respawn into a fresh cookie on the next visit.
 
-For the product-specific version of that story — how Safari Cookie Cleaner detects repeated values in the popup and what its respawning-data cleanup actually clears — read [Respawning cookies](respawning-cookies.md).
+For the product-specific version of that story — how Safari Cookie Cleaner detects repeated values in the popup and what its respawning-data cleanup actually clears — read [Respawning cookies]({% link respawning-cookies.md %}).
 
 To fully clear an evercookie you need to:
 

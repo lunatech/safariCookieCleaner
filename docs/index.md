@@ -4,45 +4,44 @@ title: Safari Cookie Cleaner
 
 # Safari Cookie Cleaner
 
-Safari Cookie Cleaner is a focused Safari extension and companion app for macOS and iOS. It removes cookies for the current site, clears only the current subdomain when you need a tighter reset, detects repeated values that can respawn deleted cookies, and can keep selected targets clean on a repeating schedule.
+Safari Cookie Cleaner is a small Safari-focused tool for clearing site tracking state. This docs site has two jobs: help people contribute to the project, and help people understand how cookies and related browser storage get used in practice.
 
-It is a fork of [Cookie Editor](https://github.com/Moustachauve/cookie-editor), stripped down and rebuilt from scratch as a delete-only tool for Safari.
+## On this page
 
-## What it does
+* TOC
+{:toc}
 
-- Delete cookies for the current site in one tap
-- Delete only the current subdomain without broad parent-domain cleanup when possible
-- Detect repeated values across page storage and clear site cookies plus site data when a site is respawning identifiers
-- Save recurring cleanup rules for either the site or the exact subdomain
+## Choose your path
 
-## What it deliberately doesn't do
+### For contributors
 
-Safari Cookie Cleaner does one thing: clear site tracking state from Safari. It is not a general-purpose cookie manager:
+Build the extension, understand the codebase, and work within the product's scope.
+
+- [Contributing]({% link contributing.md %}) — where to start, what kinds of changes help, and how the docs are organized
+- [Development]({% link development.md %}) — install dependencies, run tests, build the Safari payload, and load the app locally
+- [Architecture]({% link architecture.md %}) — how the extension, wrapper app, and cleanup logic fit together
+- [Publishing]({% link publishing.md %}) — how to ship your own signed build through TestFlight or App Review
+
+### The Web Cookie Book
+
+Learn how cookies work, how they get stretched into tracking systems, and why deleting a cookie is not always the end of the story.
+
+- [The Web Cookie Book]({% link web-cookie-book.md %}) — start here for the guided reading path
+- [How cookies work]({% link how-cookies-work.md %}) — the mechanics: `Set-Cookie`, scope, expiry, and browser inspection
+- [World famous cookies]({% link world-famous-cookies.md %}) — recognizable examples from large web platforms
+- [Evercookie tracking]({% link evercookie.md %}) — how identifiers get copied across multiple browser stores
+- [Respawning cookies]({% link respawning-cookies.md %}) — how Safari Cookie Cleaner detects repeated identifiers and clears site data
+
+## Project scope
+
+Safari Cookie Cleaner is intentionally narrow:
 
 - Safari only — no Chrome, Firefox, or other browsers
-- focused cleanup, not a full cookie viewer or editor
-- no import or export tools
-- no DevTools panel
-- no account, cloud sync, or telemetry of any kind
+- cleanup focused, not a general-purpose cookie viewer or editor
+- no account, cloud sync, or telemetry
+- no download link today; you build it yourself from source with your own Apple Developer account and signing identity
 
 Scheduled cleanup works best on macOS. On iPhone and iPad, Safari may delay background runs until the system wakes the extension again.
-
-## Getting the app
-
-This app is not published on the App Store, TestFlight, or anywhere else. There is no download link. You build it yourself from source with your own Apple Developer account and signing certificate — see [Development](development.html).
-
-## Learn more
-
-- [Architecture](architecture.html) — how the extension and the native wrapper app fit together
-- [Development](development.html) — build, run, and debug the extension locally
-- [Publishing](publishing.html) — TestFlight and App Store release steps
-
-## Cookies
-
-- [How cookies work](how-cookies-work.html) — the Set-Cookie header, attributes, scope, and how to inspect the live cookie jar from the browser console
-- [Evercookie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
-- [Respawning cookies](respawning-cookies.html) — how Safari Cookie Cleaner detects repeated values and clears the storage that can write deleted cookies back
-- [World famous cookies](world-famous-cookies.html) — recognizable cookies from Google, Cloudflare, and Yahoo, what they do, and what deletion changes
 
 ## Source and issues
 

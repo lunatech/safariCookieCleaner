@@ -1,14 +1,19 @@
 ---
-title: Respawning Cookies
+title: The Web Cookie Book: Respawning cookies
 ---
 
-[Docs home](index.md) · [How cookies work](how-cookies-work.md) · [Evercookie tracking](evercookie.md)
+[Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %}) · [How cookies work]({% link how-cookies-work.md %}) · [Evercookie tracking]({% link evercookie.md %})
 
 # Respawning cookies in Safari Cookie Cleaner
 
 In industry terms, a cookie that comes back after deletion is usually called an **evercookie** or **zombie cookie**. Safari Cookie Cleaner calls the cleanup path **Respawning data** in the popup, but it is solving that same problem.
 
 The extension looks for the simplest respawn pattern: the same identifier copied into more than one browser store. It scans the current page's `document.cookie`, `localStorage`, `sessionStorage`, `window.name`, and `cookieStore` when Safari exposes it. If the same string appears in more than one place, the popup shows it as a repeated value.
+
+## On this page
+
+* TOC
+{:toc}
 
 Example:
 
@@ -38,4 +43,4 @@ A few limits matter:
 
 Cookie removal itself has one Safari-specific workaround. The cleaner first resolves every real cookie store with `cookies.getAllCookieStores()` and then queries each store directly. That avoids a Safari 18+ bug documented in the codebase where `cookies.getAll()` can return an empty result on the first call when `storeId` is left undefined.
 
-If you want the broader background on evercookies and zombie-cookie tracking, read [Evercookie tracking](evercookie.md). If you want the lower-level cookie basics first, start with [How cookies work](how-cookies-work.md).
+If you want the broader background on evercookies and zombie-cookie tracking, read [Evercookie tracking]({% link evercookie.md %}). If you want the lower-level cookie basics first, start with [How cookies work]({% link how-cookies-work.md %}).

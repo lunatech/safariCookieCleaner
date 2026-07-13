@@ -1,8 +1,13 @@
-[Docs home](index.md) · [Development](development.md) · [Publishing](publishing.md)
+[Docs home]({% link index.md %}) · [Contributing]({% link contributing.md %}) · [Development]({% link development.md %}) · [Publishing]({% link publishing.md %})
 
 # How Safari Cookie Cleaner works on Safari
 
 Safari does not let you install a WebExtension directly the way Chrome or Firefox do. Apple requires a Safari Web Extension to ship inside a native app for macOS and iOS. This repo keeps both pieces together.
+
+## On this page
+
+* TOC
+{:toc}
 
 ## The moving parts
 
@@ -84,7 +89,7 @@ The helper logic for these decisions lives in `interface/core/urlScope.js` and `
 
 ## Evercookie detection
 
-Deleting cookies alone doesn't stop a site from re-deriving the same tracking identifier out of `localStorage`, `IndexedDB`, the Cache API, or `window.name` — see [Evercookie tracking](evercookie.md) for how that respawning works. `interface/core/evercookieScanner.js` is the extension's detector for that pattern:
+Deleting cookies alone doesn't stop a site from re-deriving the same tracking identifier out of `localStorage`, `IndexedDB`, the Cache API, or `window.name` — see [Evercookie tracking]({% link evercookie.md %}) for how that respawning works. `interface/core/evercookieScanner.js` is the extension's detector for that pattern:
 
 - `collectPageStorage()` is a self-contained function injected into the active tab via `chrome.scripting.executeScript` (the `scripting` permission above). It reads cookies, `localStorage`, `sessionStorage`, `window.name`, the `cookieStore` API, IndexedDB database names, and Cache API cache names from the page's own context — the same visibility a page's own script has, nothing more. IndexedDB and Cache API contents are not read because doing so safely requires knowing each site's schemas and response formats.
 - `detectRespawnSignals()` cross-references the values collected from every store and flags any identifier (8+ characters) that shows up in more than one place. That duplication across independent stores is the respawn signature evercookie-style tracking leaves behind.

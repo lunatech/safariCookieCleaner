@@ -1,14 +1,19 @@
 ---
-title: World famous cookies
+title: The Web Cookie Book: World famous cookies
 ---
 
-[Docs home](index.md) · [How cookies work](how-cookies-work.md) · [Evercookie tracking](evercookie.md)
+[Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %}) · [How cookies work]({% link how-cookies-work.md %})
 
 # World famous cookies
 
 A cookie name can offer a clue about who set it and why, but it is not a verdict. The same company may use different cookies by product, region, account state, and consent choice. Values are usually opaque identifiers; do not paste them into bug reports or public forums.
 
 Here are cookies you are likely to meet on three heavily used parts of the web.
+
+## On this page
+
+* TOC
+{:toc}
 
 ## Google: `NID` and `__Secure-1PSID`
 

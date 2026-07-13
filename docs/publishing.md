@@ -1,8 +1,13 @@
-[Docs home](index.md)
+[Docs home]({% link index.md %}) · [Contributing]({% link contributing.md %})
 
 # Publishing
 
-This app is not published on the App Store, TestFlight, or anywhere else today — see [Availability](../README.md#availability). These are the steps for taking a local build through TestFlight and, eventually, App Review, if you're maintaining your own signed release.
+This app is not published on the App Store, TestFlight, or anywhere else today. These are the steps for taking a local build through TestFlight and, eventually, App Review, if you're maintaining your own signed release.
+
+## On this page
+
+* TOC
+{:toc}
 
 ## Staging / TestFlight
 

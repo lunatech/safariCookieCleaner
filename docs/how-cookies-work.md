@@ -1,8 +1,17 @@
-[Docs home](index.md) · [Architecture](architecture.md) · [Development](development.md)
+---
+title: The Web Cookie Book: How cookies work
+---
+
+[Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %})
 
 # How cookies work
 
 A cookie is a small piece of text a server sends to a browser and the browser sends back on every subsequent request to that server. That round-trip is the entire mechanism. Everything else, including tracking, authentication, and personalization, is built on top of it.
+
+## On this page
+
+* TOC
+{:toc}
 
 ## The Set-Cookie header
 
@@ -51,7 +60,7 @@ Two scopes matter most when you want to delete cookies without over-reaching:
 
 Deleting at site scope removes everything. Deleting at subdomain scope leaves parent-domain cookies alone, which matters when you are logged in on `www.example.com` and only want to reset state on `app.example.com`.
 
-## Inspecting cookies from the browser console
+## Inspecting cookies in Safari
 
 Safari's Web Inspector exposes the full cookie jar for the current page. Open it with **Develop → Show Web Inspector** (enable the Develop menu first under **Safari → Settings → Advanced → Show features for web developers**).
 
@@ -146,4 +155,4 @@ A few common misconceptions:
 - Cookies are not encrypted at rest by the browser; they are stored as plain text on disk. `Secure` only controls transmission over the network, not storage.
 - Deleting cookies does not delete browser cache, localStorage, sessionStorage, IndexedDB, or service worker registrations. A site can survive a cookie deletion if it stored a tracking identifier in any of those other stores.
 
-That last point is why Safari Cookie Cleaner checks for [respawning cookies](respawning-cookies.md): cookies are still the main identifier store, but a site can write the same ID into other browser storage and restore it after a delete.
+That last point is why Safari Cookie Cleaner checks for [respawning cookies]({% link respawning-cookies.md %}): cookies are still the main identifier store, but a site can write the same ID into other browser storage and restore it after a delete.
