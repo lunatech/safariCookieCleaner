@@ -1,5 +1,5 @@
 ---
-title: The Web Cookie Book: How cookies work
+title: "The Web Cookie Book: How cookies work"
 ---
 
 [Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %})

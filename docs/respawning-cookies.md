@@ -1,5 +1,5 @@
 ---
-title: The Web Cookie Book: Respawning cookies
+title: "The Web Cookie Book: Respawning cookies"
 ---
 
 [Docs home]({% link index.md %}) · [The Web Cookie Book]({% link web-cookie-book.md %}) · [How cookies work]({% link how-cookies-work.md %}) · [Evercookie tracking]({% link evercookie.md %})
