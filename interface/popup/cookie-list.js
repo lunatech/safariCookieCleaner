@@ -12,6 +12,10 @@ import {
   filterCookiesForManualCleanup,
   getCookiesForCurrentTab,
 } from '../core/cookieCleaner.js';
+import {
+  clearPageStorageForTab,
+  scanTabForEvercookies,
+} from '../core/evercookieScanner.js';
 import { CleanupScopes, getScopeDetails } from '../core/urlScope.js';
 import { BrowserDetector } from '../lib/browserDetector.js';
 import { GenericStorageHandler } from '../lib/genericStorageHandler.js';
@@ -31,6 +35,12 @@ const POPUP_CADENCE_OPTIONS = [
   { id: CleanupCadences.OneDay, label: '1d' },
 ];
 const FOOTER_MESSAGE_TIMEOUT_MS = 2500;
+const ManualCleanupModes = Object.freeze({
+  Site: 'site',
+  Subdomain: 'subdomain',
+  Respawn: 'respawn',
+  All: 'all',
+});
 
 const state = {
   currentTab: null,
@@ -38,8 +48,12 @@ const state = {
   scopeDetails: { hostname: '', site: '' },
   siteRule: null,
   subdomainRule: null,
+  respawnRule: null,
   siteCookieCount: null,
   subdomainCookieCount: null,
+  respawnValueCount: 0,
+  respawnEntries: [],
+  evercookieScan: null,
 };
 
 const elements = {};
@@ -55,8 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   cacheElements();
   bindEvents();
-  setupSwipe(elements.siteRowContent, CleanupScopes.Site);
-  setupSwipe(elements.subdomainRowContent, CleanupScopes.Subdomain);
+  setupSwipe(elements.siteRowContent, ManualCleanupModes.Site);
+  setupSwipe(elements.subdomainRowContent, ManualCleanupModes.Subdomain);
+  setupSwipe(elements.respawnRowContent, ManualCleanupModes.Respawn);
   await updateTheme();
   watchSystemTheme();
   await loadCurrentTab();
@@ -67,16 +82,33 @@ function cacheElements() {
   elements.subdomainLabel = document.getElementById('subdomain-label');
   elements.siteSub = document.getElementById('site-sub');
   elements.subdomainSub = document.getElementById('subdomain-sub');
+  elements.respawnSub = document.getElementById('respawn-sub');
   elements.sitePicker = document.getElementById('site-picker');
   elements.subdomainPicker = document.getElementById('subdomain-picker');
+  elements.respawnPicker = document.getElementById('respawn-picker');
   elements.siteClear = document.getElementById('delete-site');
   elements.subdomainClear = document.getElementById('delete-subdomain');
+  elements.deleteRespawn = document.getElementById('delete-respawn');
+  elements.deleteAll = document.getElementById('delete-all');
   elements.siteTapClear = document.getElementById('site-tap-clear');
   elements.subdomainTapClear = document.getElementById('subdomain-tap-clear');
+  elements.respawnTapClear = document.getElementById('respawn-tap-clear');
   elements.siteRowContent = document.getElementById('site-row-content');
   elements.subdomainRowContent = document.getElementById(
     'subdomain-row-content'
   );
+  elements.respawnRowContent = document.getElementById('respawn-row-content');
+  elements.respawnDisclosure = document.getElementById('respawn-disclosure');
+  elements.respawnDisclosureToggle = document.getElementById(
+    'respawn-disclosure-toggle'
+  );
+  elements.respawnDisclosureList = document.getElementById(
+    'respawn-disclosure-list'
+  );
+  elements.respawnDisclosureEmpty = document.getElementById(
+    'respawn-disclosure-empty'
+  );
+  elements.deleteAllNote = document.getElementById('delete-all-note');
   elements.permissionCard = document.getElementById('permission-card');
   elements.requestPermission = document.getElementById('request-permission');
   elements.manageAutomation = document.getElementById('manage-automation');
@@ -108,28 +140,63 @@ function bindEvents() {
     logPopupEvent('Clear site clicked', {
       currentTabUrl: state.currentTab?.url,
     });
-    await runManualCleanup(CleanupScopes.Site);
+    await runManualCleanup(ManualCleanupModes.Site);
   });
 
   elements.subdomainClear.addEventListener('click', async () => {
     logPopupEvent('Clear subdomain clicked', {
       currentTabUrl: state.currentTab?.url,
     });
-    await runManualCleanup(CleanupScopes.Subdomain);
+    await runManualCleanup(ManualCleanupModes.Subdomain);
+  });
+
+  elements.deleteRespawn.addEventListener('click', async () => {
+    logPopupEvent('Clear respawn clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
+    await runManualCleanup(ManualCleanupModes.Respawn);
+  });
+
+  elements.deleteAll.addEventListener('click', async () => {
+    logPopupEvent('Remove all clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
+    await runManualCleanup(ManualCleanupModes.All);
   });
 
   elements.siteTapClear.addEventListener('click', async () => {
     logPopupEvent('Clear site tap-icon clicked', {
       currentTabUrl: state.currentTab?.url,
     });
-    await runManualCleanup(CleanupScopes.Site);
+    await runManualCleanup(ManualCleanupModes.Site);
   });
 
   elements.subdomainTapClear.addEventListener('click', async () => {
     logPopupEvent('Clear subdomain tap-icon clicked', {
       currentTabUrl: state.currentTab?.url,
     });
-    await runManualCleanup(CleanupScopes.Subdomain);
+    await runManualCleanup(ManualCleanupModes.Subdomain);
+  });
+
+  elements.respawnTapClear.addEventListener('click', async () => {
+    logPopupEvent('Clear respawn tap-icon clicked', {
+      currentTabUrl: state.currentTab?.url,
+    });
+    await runManualCleanup(ManualCleanupModes.Respawn);
+  });
+
+  elements.respawnDisclosureToggle.addEventListener('click', () => {
+    const expanded =
+      elements.respawnDisclosureToggle.getAttribute('aria-expanded') === 'true';
+    logPopupEvent('Respawn disclosure toggled', {
+      currentTabUrl: state.currentTab?.url,
+      expanded: !expanded,
+    });
+    elements.respawnDisclosureToggle.setAttribute(
+      'aria-expanded',
+      String(!expanded)
+    );
+    elements.respawnDisclosureList.classList.toggle('hidden', expanded);
   });
 
   elements.sitePicker.addEventListener('change', async () => {
@@ -146,6 +213,14 @@ function bindEvents() {
       value: elements.subdomainPicker.value,
     });
     await handlePickerChange(CleanupScopes.Subdomain, elements.subdomainPicker);
+  });
+
+  elements.respawnPicker.addEventListener('change', async () => {
+    logPopupEvent('Respawn repeat picker changed', {
+      currentTabUrl: state.currentTab?.url,
+      value: elements.respawnPicker.value,
+    });
+    await handleRespawnPickerChange();
   });
 
   elements.manageAutomation.addEventListener('click', async () => {
@@ -226,16 +301,23 @@ async function refreshPermissionsAndRules() {
   if (!state.hasPermission) {
     state.siteRule = null;
     state.subdomainRule = null;
+    state.respawnRule = null;
     state.siteCookieCount = null;
     state.subdomainCookieCount = null;
+    state.respawnValueCount = 0;
+    state.respawnEntries = [];
+    state.evercookieScan = null;
     renderRows();
+    renderRespawnRow();
     elements.footer.textContent = 'Grant site access to manage cookies here.';
     return;
   }
 
   await refreshRules();
   await refreshCookieCounts();
+  await refreshEvercookieScan();
   renderRows();
+  renderRespawnRow();
   await refreshFooter();
 }
 
@@ -253,6 +335,7 @@ async function refreshRules() {
         rule.scope === CleanupScopes.Subdomain &&
         rule.target === state.scopeDetails.hostname
     ) || null;
+  state.respawnRule = state.siteRule;
 }
 
 async function refreshCookieCounts() {
@@ -281,6 +364,192 @@ async function refreshCookieCounts() {
 
 function formatCookieCount(count) {
   return `${count} cookie${count === 1 ? '' : 's'}`;
+}
+
+async function refreshEvercookieScan() {
+  if (!state.currentTab || !state.hasPermission) {
+    return;
+  }
+
+  if (!browserDetector.getApi().scripting?.executeScript) {
+    logPopupEvent('Evercookie scan skipped', {
+      reason: 'scripting API unavailable',
+    });
+    state.evercookieScan = { supported: false };
+    state.respawnValueCount = 0;
+    state.respawnEntries = [];
+    return;
+  }
+
+  try {
+    const scan = await scanTabForEvercookies(browserDetector, state.currentTab);
+    logPopupEvent('Evercookie scan completed', {
+      currentTabUrl: state.currentTab.url,
+      populatedMechanisms: scan.populatedMechanisms,
+      respawnSignalCount: scan.respawnSignals.length,
+    });
+    state.evercookieScan = { supported: true, ...scan };
+    state.respawnEntries = scan.respawnSignals.map(({ value, locations }) => ({
+      value,
+      locations,
+    }));
+    state.respawnValueCount = state.respawnEntries.length;
+  } catch (error) {
+    console.error('Evercookie scan failed', error);
+    logPopupEvent('Evercookie scan failed', {
+      currentTabUrl: state.currentTab.url,
+      error: error.message || String(error),
+    });
+    state.evercookieScan = { supported: true, failed: true };
+    state.respawnValueCount = 0;
+    state.respawnEntries = [];
+  }
+}
+
+function renderRespawnRow() {
+  const scan = state.evercookieScan;
+  const supported = Boolean(scan?.supported);
+  const failed = Boolean(scan?.failed);
+  const count = state.respawnValueCount;
+  const hasSignals = supported && !failed && count > 0;
+  const isUnsupported = !supported;
+  const isFailed = supported && failed;
+  const isZero = supported && !failed && count === 0;
+
+  if (!state.hasPermission || !scan) {
+    resetRespawnDisclosure();
+    elements.respawnSub.textContent = '—';
+    elements.deleteRespawn.disabled = true;
+    elements.respawnTapClear.disabled = true;
+    elements.respawnPicker.disabled = true;
+    elements.respawnDisclosureToggle.disabled = true;
+    elements.respawnDisclosureEmpty.classList.add('hidden');
+    return;
+  }
+
+  ensurePickerOption(elements.respawnPicker, state.respawnRule?.cadence);
+  elements.respawnPicker.value = state.respawnRule
+    ? state.respawnRule.cadence
+    : NEVER;
+  elements.respawnPicker.setAttribute(
+    'aria-label',
+    `Repeat respawning data cleanup for ${state.scopeDetails.site || 'this site'}`
+  );
+
+  resetRespawnDisclosure();
+  renderRespawnDisclosure(state.respawnEntries);
+
+  if (hasSignals) {
+    elements.respawnSub.textContent = `${count} repeated value${count === 1 ? '' : 's'} · clears site cookies + site data`;
+    elements.deleteRespawn.disabled = false;
+    elements.respawnTapClear.disabled = false;
+    elements.respawnPicker.disabled = false;
+    elements.respawnDisclosureToggle.disabled = false;
+    elements.respawnDisclosureEmpty.classList.add('hidden');
+    return;
+  }
+
+  if (isZero) {
+    elements.respawnSub.textContent = 'No repeated values found';
+    elements.deleteRespawn.disabled = true;
+    elements.respawnTapClear.disabled = true;
+    elements.respawnPicker.disabled = false;
+    elements.respawnDisclosureToggle.disabled = true;
+    elements.respawnDisclosureEmpty.classList.add('hidden');
+    return;
+  }
+
+  elements.respawnSub.textContent = isFailed
+    ? `Couldn’t inspect this page`
+    : 'Not available in this Safari version';
+  elements.deleteRespawn.disabled = true;
+  elements.respawnTapClear.disabled = true;
+  elements.respawnPicker.disabled = true;
+  elements.respawnDisclosureToggle.disabled = true;
+  elements.respawnDisclosureEmpty.classList.add('hidden');
+
+  if (isUnsupported || isFailed) {
+    elements.respawnDisclosure.classList.remove('hidden');
+  }
+}
+
+function resetRespawnDisclosure() {
+  elements.respawnDisclosureToggle.setAttribute('aria-expanded', 'false');
+  elements.respawnDisclosureList.classList.add('hidden');
+
+  Array.from(
+    elements.respawnDisclosureList.querySelectorAll('.respawn-signal')
+  ).forEach(entry => entry.remove());
+}
+
+function renderRespawnDisclosure(entries) {
+  entries.forEach(entry => {
+    elements.respawnDisclosureList.appendChild(
+      createRespawnDisclosureItem(entry, state.respawnValueCount)
+    );
+  });
+}
+
+function createRespawnDisclosureItem(entry, totalCount) {
+  const item = document.createElement('article');
+  item.className = 'respawn-signal';
+  item.title = entry.value;
+
+  const topLine = document.createElement('div');
+  topLine.className = 'respawn-signal-top';
+
+  const value = document.createElement('code');
+  value.className = 'respawn-signal-value';
+  value.textContent = truncateRespawnValue(entry.value, totalCount);
+
+  const badge = document.createElement('span');
+  badge.className = 'respawn-signal-badge';
+  badge.textContent = `${entry.locations.length} store${entry.locations.length === 1 ? '' : 's'}`;
+
+  topLine.append(value, badge);
+  item.appendChild(topLine);
+
+  const cookieNames = getRespawnCookieNames(entry.locations);
+  if (cookieNames.length) {
+    const cookieSummary = document.createElement('p');
+    cookieSummary.className = 'respawn-signal-cookie-names';
+    cookieSummary.textContent = `Cookie names: ${cookieNames.join(', ')}`;
+    item.appendChild(cookieSummary);
+  }
+
+  const chain = document.createElement('p');
+  chain.className = 'respawn-signal-chain';
+  chain.textContent = entry.locations.join(' → ');
+  item.appendChild(chain);
+
+  return item;
+}
+
+function truncateRespawnValue(value, count) {
+  const limit = getRespawnPreviewLength(count);
+  if (value.length <= limit) {
+    return value;
+  }
+  return `${value.slice(0, limit)}…`;
+}
+
+function getRespawnPreviewLength(count) {
+  if (count <= 8) {
+    return 12;
+  }
+  if (count <= 14) {
+    return 10;
+  }
+  return 8;
+}
+
+function getRespawnCookieNames(locations) {
+  return locations
+    .filter(
+      location =>
+        location.startsWith('cookies.') || location.startsWith('cookieStore.')
+    )
+    .map(location => location.slice(location.indexOf('.') + 1));
 }
 
 function formatRepeatLabel(cadenceId) {
@@ -326,9 +595,13 @@ function renderRows() {
 
   ensurePickerOption(elements.sitePicker, state.siteRule?.cadence);
   ensurePickerOption(elements.subdomainPicker, state.subdomainRule?.cadence);
+  ensurePickerOption(elements.respawnPicker, state.respawnRule?.cadence);
   elements.sitePicker.value = state.siteRule ? state.siteRule.cadence : NEVER;
   elements.subdomainPicker.value = state.subdomainRule
     ? state.subdomainRule.cadence
+    : NEVER;
+  elements.respawnPicker.value = state.respawnRule
+    ? state.respawnRule.cadence
     : NEVER;
 
   elements.siteClear.setAttribute(
@@ -339,6 +612,10 @@ function renderRows() {
     'aria-label',
     `Clear cookies for ${hostname || 'this subdomain'}`
   );
+  elements.deleteRespawn.setAttribute(
+    'aria-label',
+    `Clear site cookies and site data for ${site || 'this site'}`
+  );
   elements.siteTapClear.setAttribute(
     'aria-label',
     `Clear cookies for ${site || 'this site'}`
@@ -347,6 +624,10 @@ function renderRows() {
     'aria-label',
     `Clear cookies for ${hostname || 'this subdomain'}`
   );
+  elements.respawnTapClear.setAttribute(
+    'aria-label',
+    `Clear site cookies and site data for ${site || 'this site'}`
+  );
   elements.sitePicker.setAttribute(
     'aria-label',
     `Repeat cleanup for ${site || 'this site'}`
@@ -354,6 +635,10 @@ function renderRows() {
   elements.subdomainPicker.setAttribute(
     'aria-label',
     `Repeat cleanup for ${hostname || 'this subdomain'}`
+  );
+  elements.respawnPicker.setAttribute(
+    'aria-label',
+    `Repeat respawning data cleanup for ${site || 'this site'}`
   );
 }
 
@@ -376,47 +661,127 @@ async function handlePickerChange(scope, picker) {
 
   await refreshRules();
   renderRows();
+  renderRespawnRow();
   await refreshFooter();
 }
 
-async function runManualCleanup(scope) {
+async function handleRespawnPickerChange() {
   if (!state.currentTab || !state.hasPermission) {
     return;
   }
 
+  const value = elements.respawnPicker.value;
+  if (value === NEVER) {
+    if (state.siteRule) {
+      await automationStorage.removeRule(state.siteRule.id);
+    }
+  } else {
+    await automationStorage.upsertRule(
+      state.currentTab.url,
+      CleanupScopes.Site,
+      value
+    );
+  }
+
+  await refreshRules();
+  renderRows();
+  renderRespawnRow();
+  await refreshFooter();
+}
+
+async function runManualCleanup(mode) {
+  if (!state.currentTab || !state.hasPermission) {
+    return;
+  }
+
+  const cleanupScope =
+    mode === ManualCleanupModes.Subdomain
+      ? CleanupScopes.Subdomain
+      : CleanupScopes.Site;
+  const shouldClearStorage =
+    mode === ManualCleanupModes.Respawn || mode === ManualCleanupModes.All;
+
   logPopupEvent('Manual cleanup starting', {
-    scope: scope,
+    mode,
+    cleanupScope,
     currentTabUrl: state.currentTab.url,
     hasPermission: state.hasPermission,
+    shouldClearStorage,
   });
-  const buttons =
-    scope === CleanupScopes.Site
-      ? [elements.siteClear, elements.siteTapClear]
-      : [elements.subdomainClear, elements.subdomainTapClear];
+
+  const buttons = getButtonsForCleanupMode(mode);
   await withBusy(buttons, async () => {
     const result = await deleteCookiesForCurrentTab(
       browserDetector,
       state.currentTab,
-      scope
+      cleanupScope
     );
 
+    if (shouldClearStorage) {
+      try {
+        await clearPageStorageForTab(browserDetector, state.currentTab);
+      } catch (error) {
+        console.error('Failed to clear page storage', error);
+        logPopupEvent('Manual storage clear failed', {
+          currentTabUrl: state.currentTab.url,
+          error: error.message || String(error),
+        });
+      }
+    }
+
     logPopupEvent('Manual cleanup finished', {
-      scope: scope,
+      mode,
+      cleanupScope,
       currentTabUrl: state.currentTab.url,
       matchedCount: result.matchedCount,
       removedCount: result.removedCount,
+      clearedStorage: shouldClearStorage,
     });
     await refreshCookieCounts();
+    await refreshEvercookieScan();
     renderRows();
+    renderRespawnRow();
 
-    const label = scope === CleanupScopes.Site ? 'site' : 'subdomain';
-    showTransientFooter(
-      result.matchedCount
-        ? `Removed ${result.removedCount} cookie${result.removedCount === 1 ? '' : 's'} for the ${label}.`
-        : `No cookies matched the ${label}.`
-    );
+    showTransientFooter(getManualCleanupFooterMessage(mode, result));
   });
-  closeSwipedRow(scope);
+  closeSwipedRow(mode);
+}
+
+function getButtonsForCleanupMode(mode) {
+  switch (mode) {
+    case ManualCleanupModes.Site:
+      return [elements.siteClear, elements.siteTapClear];
+    case ManualCleanupModes.Subdomain:
+      return [elements.subdomainClear, elements.subdomainTapClear];
+    case ManualCleanupModes.Respawn:
+      return [
+        elements.deleteRespawn,
+        elements.respawnTapClear,
+        elements.deleteAll,
+      ];
+    case ManualCleanupModes.All:
+      return [
+        elements.deleteAll,
+        elements.deleteRespawn,
+        elements.respawnTapClear,
+      ];
+    default:
+      return [];
+  }
+}
+
+function getManualCleanupFooterMessage(mode, result) {
+  if (mode === ManualCleanupModes.Respawn || mode === ManualCleanupModes.All) {
+    if (!result.matchedCount) {
+      return 'No site cookies matched. Site data cleanup was attempted.';
+    }
+    return `Removed ${result.removedCount} site cookie${result.removedCount === 1 ? '' : 's'}. Site data cleanup was attempted.`;
+  }
+
+  const label = mode === ManualCleanupModes.Site ? 'site' : 'subdomain';
+  return result.matchedCount
+    ? `Removed ${result.removedCount} cookie${result.removedCount === 1 ? '' : 's'} for the ${label}.`
+    : `No cookies matched the ${label}.`;
 }
 
 async function refreshFooter() {
@@ -569,29 +934,35 @@ function setupSwipe(rowContent, scope) {
   });
 }
 
-function closeOtherSwipedRows(exceptScope) {
-  if (exceptScope !== CleanupScopes.Site) {
+function closeOtherSwipedRows(exceptMode) {
+  if (exceptMode !== ManualCleanupModes.Site) {
     elements.siteRowContent.classList.remove('swiped');
   }
-  if (exceptScope !== CleanupScopes.Subdomain) {
+  if (exceptMode !== ManualCleanupModes.Subdomain) {
     elements.subdomainRowContent.classList.remove('swiped');
+  }
+  if (exceptMode !== ManualCleanupModes.Respawn) {
+    elements.respawnRowContent.classList.remove('swiped');
   }
 }
 
-function closeSwipedRow(scope) {
-  const rowContent =
-    scope === CleanupScopes.Site
-      ? elements.siteRowContent
-      : elements.subdomainRowContent;
-  rowContent.classList.remove('swiped');
+function closeSwipedRow(mode) {
+  const rowContentByMode = {
+    [ManualCleanupModes.Site]: elements.siteRowContent,
+    [ManualCleanupModes.Subdomain]: elements.subdomainRowContent,
+    [ManualCleanupModes.Respawn]: elements.respawnRowContent,
+    [ManualCleanupModes.All]: elements.respawnRowContent,
+  };
+  rowContentByMode[mode]?.classList.remove('swiped');
 }
 
 async function withBusy(buttons, work) {
-  const originalLabel = buttons[0].textContent;
+  const activeButtons = buttons.filter(Boolean);
+  const originalLabel = activeButtons[0]?.textContent || 'action';
   logPopupEvent('Busy action started', {
     buttonLabel: originalLabel,
   });
-  buttons.forEach(button => {
+  activeButtons.forEach(button => {
     button.disabled = true;
   });
   try {
@@ -604,7 +975,7 @@ async function withBusy(buttons, work) {
     });
     showTransientFooter(error.message || 'That action failed.');
   } finally {
-    buttons.forEach(button => {
+    activeButtons.forEach(button => {
       button.disabled = false;
     });
     logPopupEvent('Busy action finished', {
@@ -616,10 +987,15 @@ async function withBusy(buttons, work) {
 function setRowsDisabled(disabled) {
   elements.siteClear.disabled = disabled;
   elements.subdomainClear.disabled = disabled;
+  elements.deleteRespawn.disabled = disabled;
+  elements.deleteAll.disabled = disabled;
   elements.siteTapClear.disabled = disabled;
   elements.subdomainTapClear.disabled = disabled;
+  elements.respawnTapClear.disabled = disabled;
   elements.sitePicker.disabled = disabled;
   elements.subdomainPicker.disabled = disabled;
+  elements.respawnPicker.disabled = disabled;
+  elements.respawnDisclosureToggle.disabled = disabled;
 }
 
 function showUnsupportedState(message) {
@@ -632,7 +1008,12 @@ function showUnsupportedState(message) {
   state.subdomainCookieCount = null;
   state.siteRule = null;
   state.subdomainRule = null;
+  state.respawnRule = null;
+  state.respawnValueCount = 0;
+  state.respawnEntries = [];
+  state.evercookieScan = null;
   renderRows();
+  renderRespawnRow();
   elements.footer.textContent = message;
   elements.permissionCard.classList.add('hidden');
   setRowsDisabled(true);

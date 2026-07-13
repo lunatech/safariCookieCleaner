@@ -21,7 +21,7 @@
             </button>
             <div class="row-content" id="site-row-content">
               <div class="row-main">
-                <p class="row-label">Site</p>
+                <p class="row-label">Site total</p>
                 <p class="row-sub" id="site-sub">— cookies</p>
               </div>
               <select class="picker" id="site-picker">
@@ -56,6 +56,58 @@
               </button>
             </div>
           </div>
+
+          <div class="row" id="respawn-row">
+            <button class="row-clear" id="delete-respawn" type="button">
+              Clear
+            </button>
+            <div class="row-content" id="respawn-row-content">
+              <div class="row-main">
+                <p class="row-label">Respawning data</p>
+                <p class="row-sub" id="respawn-sub">—</p>
+              </div>
+              <select class="picker" id="respawn-picker">
+                <option value="never" selected>Never</option>
+                <option value="1h">1h</option>
+                <option value="6h">6h</option>
+                <option value="24h">1d</option>
+              </select>
+              <button class="row-tap-clear" id="respawn-tap-clear" type="button" aria-label="Clear site cookies and site data for this site">
+                <span aria-hidden="true">🗑️</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="disclosure" id="respawn-disclosure">
+          <button
+            class="disclosure-toggle"
+            id="respawn-disclosure-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="respawn-disclosure-list"
+          >
+            <span class="disclosure-toggle-copy">
+              <span class="disclosure-title">Repeated values and where they were found</span>
+              <span class="disclosure-helper">Copies in more than one place can bring deleted site cookies back.</span>
+              <span class="disclosure-helper">Expanded inline. The popup scrolls when the list gets long.</span>
+            </span>
+            <span class="disclosure-chevron" aria-hidden="true">▶</span>
+          </button>
+          <div class="disclosure-body hidden" id="respawn-disclosure-list">
+            <p class="disclosure-empty hidden" id="respawn-disclosure-empty">
+              No repeated values found.
+            </p>
+          </div>
+        </section>
+
+        <div class="remove-all-group">
+          <button class="remove-all-button" id="delete-all" type="button">
+            Remove all
+          </button>
+          <p class="remove-all-note" id="delete-all-note">
+            Site cookies and site data
+          </p>
         </div>
 
         <p class="panel-footer" id="status-footer" aria-live="polite">

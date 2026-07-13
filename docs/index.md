@@ -4,7 +4,7 @@ title: Safari Cookie Cleaner
 
 # Safari Cookie Cleaner
 
-Safari Cookie Cleaner is a focused Safari extension and companion app for macOS and iOS. It removes cookies for the current site, clears only the current subdomain when you need a tighter reset, and can keep selected targets clean on a repeating schedule.
+Safari Cookie Cleaner is a focused Safari extension and companion app for macOS and iOS. It removes cookies for the current site, clears only the current subdomain when you need a tighter reset, detects repeated values that can respawn deleted cookies, and can keep selected targets clean on a repeating schedule.
 
 It is a fork of [Cookie Editor](https://github.com/Moustachauve/cookie-editor), stripped down and rebuilt from scratch as a delete-only tool for Safari.
 
@@ -12,15 +12,15 @@ It is a fork of [Cookie Editor](https://github.com/Moustachauve/cookie-editor), 
 
 - Delete cookies for the current site in one tap
 - Delete only the current subdomain without broad parent-domain cleanup when possible
+- Detect repeated values across page storage and clear site cookies plus site data when a site is respawning identifiers
 - Save recurring cleanup rules for either the site or the exact subdomain
-- Run the same product idea on Safari for macOS, iPhone, and iPad
 
 ## What it deliberately doesn't do
 
-Safari Cookie Cleaner does one thing: delete cookies. It's not a general-purpose cookie manager:
+Safari Cookie Cleaner does one thing: clear site tracking state from Safari. It is not a general-purpose cookie manager:
 
 - Safari only — no Chrome, Firefox, or other browsers
-- delete only — no cookie viewer, editor, or value inspector
+- focused cleanup, not a full cookie viewer or editor
 - no import or export tools
 - no DevTools panel
 - no account, cloud sync, or telemetry of any kind
@@ -40,7 +40,8 @@ This app is not published on the App Store, TestFlight, or anywhere else. There 
 ## Cookies
 
 - [How cookies work](how-cookies-work.html) — the Set-Cookie header, attributes, scope, and how to inspect the live cookie jar from the browser console
-- [Evercookie — zombie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
+- [Evercookie tracking](evercookie.html) — how trackers respawn deleted cookies across multiple storage mechanisms, and documented real-world cases
+- [Respawning cookies](respawning-cookies.html) — how Safari Cookie Cleaner detects repeated values and clears the storage that can write deleted cookies back
 - [World famous cookies](world-famous-cookies.html) — recognizable cookies from Google, Cloudflare, and Yahoo, what they do, and what deletion changes
 
 ## Source and issues
